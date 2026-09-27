@@ -1,22 +1,13 @@
-from models.evaluation import Evaluation
+import json
 
 
-test_evaluation = Evaluation(
-    problem_understanding="Correct",
-    approach="Partially correct",
-    equations="Incorrect",
-    calculations="Correct based on the equation used",
-    units="Correct",
-    assumptions="Acceptable",
-    physical_plausibility="Incorrect result due to formula error",
-    final_answer="Incorrect",
-    explanation_quality="Clear but technically incorrect",
-    errors=[
-        "Dynamic pressure equation is missing the 1/2 factor.",
-        "Final answer is twice the correct value."
-    ],
-    corrected_solution="q = 0.5 × 1.225 × 50² = 1531.25 Pa",
-    summary="The method is reasonable, but the governing equation is incorrect."
-)
+with open("benchmark/questions.json", "r") as file:
+    benchmark_data = json.load(file)
 
-print(test_evaluation)
+
+first_problem = benchmark_data[0]
+
+print("Domain:", first_problem["domain"])
+print("Question:", first_problem["question"])
+print("Expected Answer:", first_problem["expected_answer"])
+print("Expected Unit:", first_problem["expected_unit"])

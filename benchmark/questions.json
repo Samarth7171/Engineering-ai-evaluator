@@ -1,0 +1,20 @@
+[
+  {
+    "id": "fluid_001",
+    "domain": "Fluid Mechanics",
+    "difficulty": "Easy",
+    "question": "Air has a density of 1.225 kg/m^3 and flows at 50 m/s. Calculate the dynamic pressure.",
+    "reference_solution": "Dynamic pressure is calculated using q = 0.5 * rho * V^2. Substituting rho = 1.225 kg/m^3 and V = 50 m/s gives q = 1531.25 Pa.",
+    "expected_answer": 1531.25,
+    "expected_unit": "Pa",
+    "important_assumptions": [
+      "Density is constant.",
+      "The given velocity represents the flow velocity."
+    ],
+    "common_mistakes": [
+      "Using q = rho * V^2 and forgetting the 0.5 factor.",
+      "Incorrectly squaring the velocity.",
+      "Reporting incorrect units."
+    ]
+  }
+]
