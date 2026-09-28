@@ -1,10 +1,13 @@
 import json
 from pathlib import Path
 
-from evaluator.answer_extractor import extract_final_answer
 from evaluator.deterministic_checks import evaluate_numerical_answer
 from evaluator.llm_evaluator import evaluate_solution
 
+
+# --------------------------------------------------
+# LOAD ONE BENCHMARK PROBLEM
+# --------------------------------------------------
 
 def load_benchmark_problem(problem_id):
     """
@@ -15,10 +18,16 @@ def load_benchmark_problem(problem_id):
     project_root = Path(__file__).resolve().parent.parent
     benchmark_path = project_root / "benchmark" / "questions.json"
 
-    with open(benchmark_path, "r", encoding="utf-8") as file:
+    with open(
+        benchmark_path,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
         benchmark_data = json.load(file)
 
     for problem in benchmark_data:
+
         if problem["id"] == problem_id:
             return problem
 
@@ -27,44 +36,92 @@ def load_benchmark_problem(problem_id):
     )
 
 
-def run_benchmark_evaluation(problem_id, candidate_solution):
+# --------------------------------------------------
+# RUN COMPLETE BENCHMARK EVALUATION
+# --------------------------------------------------
+
+def run_benchmark_evaluation(
+    problem_id,
+    candidate_solution
+):
     """
-    Run the complete evaluation pipeline for one
-    benchmark engineering problem.
+    Run the hybrid engineering evaluation pipeline.
+
+    The LLM performs:
+    - final answer extraction
+    - engineering reasoning evaluation
+
+    Python performs:
+    - deterministic numerical verification
     """
 
-    # 1. Load trusted benchmark information
-    problem = load_benchmark_problem(problem_id)
+    # --------------------------------------------------
+    # STEP 1: LOAD TRUSTED BENCHMARK
+    # --------------------------------------------------
 
-    # 2. Extract candidate's final numerical answer
-    extracted_answer = extract_final_answer(
-        candidate_solution
+    problem = load_benchmark_problem(
+        problem_id
     )
 
-    # 3. Compare candidate number with trusted answer
+
+    # --------------------------------------------------
+    # STEP 2: ONE LLM CALL
+    # --------------------------------------------------
+
+    llm_result = evaluate_solution(
+        question=problem["question"],
+        candidate_solution=candidate_solution,
+        domain=problem["domain"],
+    )
+
+
+    # --------------------------------------------------
+    # STEP 3: SEPARATE THE TWO LLM OUTPUTS
+    # --------------------------------------------------
+
+    extracted_answer = llm_result[
+        "extracted_answer"
+    ]
+
+    reasoning_evaluation = llm_result[
+        "reasoning_evaluation"
+    ]
+
+
+    # --------------------------------------------------
+    # STEP 4: DETERMINISTIC PYTHON CHECK
+    # --------------------------------------------------
+
     numerical_check = evaluate_numerical_answer(
         expected=problem["expected_answer"],
         candidate=extracted_answer["value"],
         tolerance=2,
     )
 
-    # 4. Ask the LLM to evaluate engineering reasoning
-    reasoning_evaluation = evaluate_solution(
-        question=problem["question"],
-        candidate_solution=candidate_solution,
-        domain=problem["domain"],
-    )
 
-    # 5. Combine everything into one result
+    # --------------------------------------------------
+    # STEP 5: COMBINE EVERYTHING
+    # --------------------------------------------------
+
     result = {
         "problem": problem,
-        "extracted_answer": extracted_answer,
-        "numerical_check": numerical_check,
-        "reasoning_evaluation": reasoning_evaluation,
+
+        "extracted_answer":
+            extracted_answer,
+
+        "numerical_check":
+            numerical_check,
+
+        "reasoning_evaluation":
+            reasoning_evaluation,
     }
 
     return result
 
+
+# --------------------------------------------------
+# TEMPORARY DEVELOPMENT TEST
+# --------------------------------------------------
 
 if __name__ == "__main__":
 
@@ -85,11 +142,22 @@ if __name__ == "__main__":
         candidate_solution=test_solution,
     )
 
+
     print("\nExtracted answer:")
-    print(result["extracted_answer"])
+    print(
+        result["extracted_answer"]
+    )
+
 
     print("\nDeterministic numerical check:")
-    print(result["numerical_check"])
+    print(
+        result["numerical_check"]
+    )
+
 
     print("\nLLM reasoning summary:")
-    print(result["reasoning_evaluation"]["summary"])
+    print(
+        result[
+            "reasoning_evaluation"
+        ]["summary"]
+    )

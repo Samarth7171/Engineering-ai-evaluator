@@ -35,32 +35,33 @@ client = OpenAI(
 
 def evaluate_solution(question, candidate_solution, domain):
     """
-    Evaluate an engineering solution using an LLM.
-
-    Parameters:
-        question:
-            The engineering problem.
-
-        candidate_solution:
-            The proposed AI-generated solution.
-
-        domain:
-            The engineering subject/domain.
+    Evaluate an engineering solution and extract its
+    final numerical answer using one LLM call.
 
     Returns:
-        A Python dictionary containing
-        the structured engineering evaluation.
+        {
+            "extracted_answer": {
+                "value": number,
+                "unit": string
+            },
+            "reasoning_evaluation": {
+                ...
+            }
+        }
     """
-
-    # --------------------------------------------------
-    # SYSTEM PROMPT
-    # --------------------------------------------------
 
     system_prompt = """
 You are an engineering solution evaluator.
 
-Your job is to carefully evaluate a proposed solution to an
-engineering problem.
+You have TWO tasks.
+
+TASK 1:
+Extract the final numerical answer stated by the candidate.
+Extract the final result, not an intermediate calculation.
+Also extract the unit exactly as used by the candidate.
+
+TASK 2:
+Evaluate the engineering solution.
 
 Evaluate:
 
@@ -77,20 +78,17 @@ Evaluate:
 
 Identify specific errors and explain WHY they are errors.
 
-Do not assume that the candidate solution is correct.
+Do not assume that the candidate solution is incorrect.
+If the solution is correct, clearly state that it is correct
+and do not invent errors.
 
-Do not simply say that something is wrong.
+Do not simply say something is wrong.
 Explain the engineering reasoning behind the evaluation.
 
-After identifying errors, provide a corrected solution.
+After identifying errors, provide a corrected or improved solution.
 
 Do not invent information that is not supported by the problem.
 """
-
-
-    # --------------------------------------------------
-    # USER PROMPT
-    # --------------------------------------------------
 
     user_prompt = f"""
 ENGINEERING DOMAIN:
@@ -108,18 +106,12 @@ CANDIDATE SOLUTION:
 {candidate_solution}
 
 
-Evaluate the candidate solution.
+Extract the final answer and evaluate the candidate solution.
 """
 
-
-    # --------------------------------------------------
-    # CALL THE LLM
-    # --------------------------------------------------
-
     response = client.chat.completions.create(
+        model="dots-studio/dots-3-note-preview:free",
 
-    model="dots-studio/dots-3-note-preview:free",
-    
         extra_body={
             "provider": {
                 "require_parameters": True
@@ -131,7 +123,6 @@ Evaluate the candidate solution.
                 "role": "system",
                 "content": system_prompt,
             },
-
             {
                 "role": "user",
                 "content": user_prompt,
@@ -151,72 +142,107 @@ Evaluate the candidate solution.
 
                     "properties": {
 
-                        "problem_understanding": {
-                            "type": "string"
+                        "extracted_answer": {
+                            "type": "object",
+
+                            "properties": {
+                                "value": {
+                                    "type": "number"
+                                },
+
+                                "unit": {
+                                    "type": "string"
+                                }
+                            },
+
+                            "required": [
+                                "value",
+                                "unit"
+                            ],
+
+                            "additionalProperties": False
                         },
 
-                        "approach": {
-                            "type": "string"
-                        },
+                        "reasoning_evaluation": {
+                            "type": "object",
 
-                        "equations": {
-                            "type": "string"
-                        },
+                            "properties": {
 
-                        "calculations": {
-                            "type": "string"
-                        },
+                                "problem_understanding": {
+                                    "type": "string"
+                                },
 
-                        "units": {
-                            "type": "string"
-                        },
+                                "approach": {
+                                    "type": "string"
+                                },
 
-                        "assumptions": {
-                            "type": "string"
-                        },
+                                "equations": {
+                                    "type": "string"
+                                },
 
-                        "physical_plausibility": {
-                            "type": "string"
-                        },
+                                "calculations": {
+                                    "type": "string"
+                                },
 
-                        "final_answer": {
-                            "type": "string"
-                        },
+                                "units": {
+                                    "type": "string"
+                                },
 
-                        "explanation_quality": {
-                            "type": "string"
-                        },
+                                "assumptions": {
+                                    "type": "string"
+                                },
 
-                        "errors": {
-                            "type": "array",
+                                "physical_plausibility": {
+                                    "type": "string"
+                                },
 
-                            "items": {
-                                "type": "string"
-                            }
-                        },
+                                "final_answer": {
+                                    "type": "string"
+                                },
 
-                        "corrected_solution": {
-                            "type": "string"
-                        },
+                                "explanation_quality": {
+                                    "type": "string"
+                                },
 
-                        "summary": {
-                            "type": "string"
+                                "errors": {
+                                    "type": "array",
+
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+
+                                "corrected_solution": {
+                                    "type": "string"
+                                },
+
+                                "summary": {
+                                    "type": "string"
+                                }
+                            },
+
+                            "required": [
+                                "problem_understanding",
+                                "approach",
+                                "equations",
+                                "calculations",
+                                "units",
+                                "assumptions",
+                                "physical_plausibility",
+                                "final_answer",
+                                "explanation_quality",
+                                "errors",
+                                "corrected_solution",
+                                "summary"
+                            ],
+
+                            "additionalProperties": False
                         }
                     },
 
                     "required": [
-                        "problem_understanding",
-                        "approach",
-                        "equations",
-                        "calculations",
-                        "units",
-                        "assumptions",
-                        "physical_plausibility",
-                        "final_answer",
-                        "explanation_quality",
-                        "errors",
-                        "corrected_solution",
-                        "summary"
+                        "extracted_answer",
+                        "reasoning_evaluation"
                     ],
 
                     "additionalProperties": False
@@ -225,89 +251,19 @@ Evaluate the candidate solution.
         }
     )
 
-
-    # --------------------------------------------------
-    # GET RESPONSE FROM LLM
-    # --------------------------------------------------
-
     raw_response = response.choices[0].message.content
 
-
-    # --------------------------------------------------
-    # DEBUG EMPTY RESPONSES
-    # --------------------------------------------------
-
     if not raw_response:
-
-        print("\n")
-        print("=" * 60)
-        print("OPENROUTER DEBUG INFORMATION")
-        print("=" * 60)
-
-
-        print("\nMODEL USED:")
-        print(response.model)
-
-
-        print("\nFINISH REASON:")
-        print(response.choices[0].finish_reason)
-
-
-        print("\nMESSAGE:")
-        print(response.choices[0].message)
-
-
-        print("\nFULL RESPONSE:")
-        print(response)
-
-
-        print("\n")
-        print("=" * 60)
-        print("END DEBUG INFORMATION")
-        print("=" * 60)
-
-
         raise ValueError(
             "The LLM returned an empty response."
         )
 
-
-    # --------------------------------------------------
-    # CONVERT JSON TEXT → PYTHON DICTIONARY
-    # --------------------------------------------------
-
     try:
-
-        evaluation = json.loads(
-            raw_response
-        )
+        evaluation = json.loads(raw_response)
 
     except json.JSONDecodeError as error:
-
-        print("\n")
-        print("=" * 60)
-        print("INVALID JSON DEBUG INFORMATION")
-        print("=" * 60)
-
-        print("\nRAW LLM RESPONSE:")
-        print(raw_response)
-
-        print("\nMODEL USED:")
-        print(response.model)
-
-        print("\nFINISH REASON:")
-        print(response.choices[0].finish_reason)
-
-        print("\n")
-        print("=" * 60)
-
         raise ValueError(
             "The LLM returned an invalid structured response."
         ) from error
-
-
-    # --------------------------------------------------
-    # RETURN RESULT
-    # --------------------------------------------------
 
     return evaluation
