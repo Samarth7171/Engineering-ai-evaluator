@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from evaluator.llm_evaluator import client
 from evaluator.deterministic_checks import evaluate_numerical_answer
@@ -76,10 +77,10 @@ def extract_final_answer(candidate_solution):
         }
     )
 
-    # Get the LLM response
+    # Get the response from the LLM
     raw_response = response.choices[0].message.content
 
-    # Make sure the LLM actually returned something
+    # Make sure the LLM returned something
     if not raw_response:
         raise ValueError(
             "The answer extractor returned an empty response."
@@ -97,6 +98,53 @@ def extract_final_answer(candidate_solution):
 
 if __name__ == "__main__":
 
+    # --------------------------------------------------
+    # STEP 1: FIND THE PROJECT ROOT
+    # --------------------------------------------------
+
+    project_root = Path(__file__).resolve().parent.parent
+
+    benchmark_path = (
+        project_root
+        / "benchmark"
+        / "questions.json"
+    )
+
+
+    # --------------------------------------------------
+    # STEP 2: LOAD THE BENCHMARK DATA
+    # --------------------------------------------------
+
+    with open(
+        benchmark_path,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
+        benchmark_data = json.load(file)
+
+
+    # --------------------------------------------------
+    # STEP 3: SELECT FIRST BENCHMARK PROBLEM
+    # --------------------------------------------------
+
+    problem = benchmark_data[0]
+
+
+    print("\nBenchmark question:")
+    print(problem["question"])
+
+    print("\nExpected answer:")
+    print(
+        problem["expected_answer"],
+        problem["expected_unit"]
+    )
+
+
+    # --------------------------------------------------
+    # STEP 4: CREATE TEST CANDIDATE SOLUTION
+    # --------------------------------------------------
+
     test_solution = """
     Dynamic pressure is calculated using:
 
@@ -109,29 +157,38 @@ if __name__ == "__main__":
     Therefore, the dynamic pressure is 3062.5 Pa.
     """
 
-    # ----------------------------------------------
-    # STEP 1:
-    # Extract the candidate's final answer
-    # ----------------------------------------------
+
+    # --------------------------------------------------
+    # STEP 5: EXTRACT CANDIDATE FINAL ANSWER
+    # --------------------------------------------------
 
     extracted_answer = extract_final_answer(
         test_solution
     )
 
     print("\nExtracted answer:")
-    print(extracted_answer)
+
+    print(
+        extracted_answer["value"],
+        extracted_answer["unit"]
+    )
 
 
-    # ----------------------------------------------
-    # STEP 2:
-    # Compare with trusted reference answer
-    # ----------------------------------------------
+    # --------------------------------------------------
+    # STEP 6: RUN DETERMINISTIC NUMERICAL CHECK
+    # --------------------------------------------------
 
     numerical_evaluation = evaluate_numerical_answer(
-        expected=1531.25,
+        expected=problem["expected_answer"],
         candidate=extracted_answer["value"],
         tolerance=2,
     )
 
+
+    # --------------------------------------------------
+    # STEP 7: DISPLAY NUMERICAL EVALUATION
+    # --------------------------------------------------
+
     print("\nNumerical evaluation:")
+
     print(numerical_evaluation)
