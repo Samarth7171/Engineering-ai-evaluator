@@ -118,8 +118,8 @@ Evaluate the candidate solution.
 
     response = client.chat.completions.create(
 
-        model="openrouter/free",
-
+    model="dots-studio/dots-3-note-preview:free",
+    
         extra_body={
             "provider": {
                 "require_parameters": True
