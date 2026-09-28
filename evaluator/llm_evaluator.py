@@ -38,12 +38,18 @@ def evaluate_solution(question, candidate_solution, domain):
     Evaluate an engineering solution using an LLM.
 
     Parameters:
-        question: The engineering problem.
-        candidate_solution: The proposed AI-generated solution.
-        domain: The engineering subject/domain.
+        question:
+            The engineering problem.
+
+        candidate_solution:
+            The proposed AI-generated solution.
+
+        domain:
+            The engineering subject/domain.
 
     Returns:
-        A Python dictionary containing the structured evaluation.
+        A Python dictionary containing
+        the structured engineering evaluation.
     """
 
     # --------------------------------------------------
@@ -81,6 +87,7 @@ After identifying errors, provide a corrected solution.
 Do not invent information that is not supported by the problem.
 """
 
+
     # --------------------------------------------------
     # USER PROMPT
     # --------------------------------------------------
@@ -104,11 +111,13 @@ CANDIDATE SOLUTION:
 Evaluate the candidate solution.
 """
 
+
     # --------------------------------------------------
     # CALL THE LLM
     # --------------------------------------------------
 
     response = client.chat.completions.create(
+
         model="openrouter/free",
 
         extra_body={
@@ -122,6 +131,7 @@ Evaluate the candidate solution.
                 "role": "system",
                 "content": system_prompt,
             },
+
             {
                 "role": "user",
                 "content": user_prompt,
@@ -140,6 +150,7 @@ Evaluate the candidate solution.
                     "type": "object",
 
                     "properties": {
+
                         "problem_understanding": {
                             "type": "string"
                         },
@@ -178,6 +189,7 @@ Evaluate the candidate solution.
 
                         "errors": {
                             "type": "array",
+
                             "items": {
                                 "type": "string"
                             }
@@ -213,29 +225,89 @@ Evaluate the candidate solution.
         }
     )
 
+
     # --------------------------------------------------
     # GET RESPONSE FROM LLM
     # --------------------------------------------------
 
     raw_response = response.choices[0].message.content
 
+
+    # --------------------------------------------------
+    # DEBUG EMPTY RESPONSES
+    # --------------------------------------------------
+
     if not raw_response:
-        raise ValueError("The LLM returned an empty response.")
+
+        print("\n")
+        print("=" * 60)
+        print("OPENROUTER DEBUG INFORMATION")
+        print("=" * 60)
+
+
+        print("\nMODEL USED:")
+        print(response.model)
+
+
+        print("\nFINISH REASON:")
+        print(response.choices[0].finish_reason)
+
+
+        print("\nMESSAGE:")
+        print(response.choices[0].message)
+
+
+        print("\nFULL RESPONSE:")
+        print(response)
+
+
+        print("\n")
+        print("=" * 60)
+        print("END DEBUG INFORMATION")
+        print("=" * 60)
+
+
+        raise ValueError(
+            "The LLM returned an empty response."
+        )
+
 
     # --------------------------------------------------
     # CONVERT JSON TEXT → PYTHON DICTIONARY
     # --------------------------------------------------
 
     try:
-        evaluation = json.loads(raw_response)
+
+        evaluation = json.loads(
+            raw_response
+        )
 
     except json.JSONDecodeError as error:
+
+        print("\n")
+        print("=" * 60)
+        print("INVALID JSON DEBUG INFORMATION")
+        print("=" * 60)
+
+        print("\nRAW LLM RESPONSE:")
+        print(raw_response)
+
+        print("\nMODEL USED:")
+        print(response.model)
+
+        print("\nFINISH REASON:")
+        print(response.choices[0].finish_reason)
+
+        print("\n")
+        print("=" * 60)
+
         raise ValueError(
             "The LLM returned an invalid structured response."
         ) from error
 
+
     # --------------------------------------------------
-    # RETURN RESULT TO APP.PY
+    # RETURN RESULT
     # --------------------------------------------------
 
     return evaluation
