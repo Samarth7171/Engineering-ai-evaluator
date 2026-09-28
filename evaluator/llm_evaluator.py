@@ -1,4 +1,5 @@
 import os
+import json
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -8,13 +9,10 @@ from openai import OpenAI
 # 1. LOAD API KEY
 # --------------------------------------------------
 
-# Load variables stored inside the .env file
 load_dotenv()
 
-# Get our OpenRouter API key
 api_key = os.getenv("OPENROUTER_API_KEY")
 
-# Stop the program if the key cannot be found
 if not api_key:
     raise ValueError("OPENROUTER_API_KEY was not found in .env")
 
@@ -26,48 +24,42 @@ if not api_key:
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=api_key,
+    timeout=45.0,
+    max_retries=1,
 )
 
 
 # --------------------------------------------------
-# 3. ENGINEERING QUESTION
+# 3. ENGINEERING EVALUATION FUNCTION
 # --------------------------------------------------
 
-engineering_question = """
-Air has a density of 1.225 kg/m^3 and flows at 50 m/s.
-Calculate the dynamic pressure.
-"""
+def evaluate_solution(question, candidate_solution, domain):
+    """
+    Evaluate an engineering solution using an LLM.
 
+    Parameters:
+        question: The engineering problem.
+        candidate_solution: The proposed AI-generated solution.
+        domain: The engineering subject/domain.
 
-# --------------------------------------------------
-# 4. AI-GENERATED / CANDIDATE SOLUTION
-# --------------------------------------------------
+    Returns:
+        A Python dictionary containing the structured evaluation.
+    """
 
-candidate_solution = """
-Dynamic pressure is calculated using:
+    # --------------------------------------------------
+    # SYSTEM PROMPT
+    # --------------------------------------------------
 
-q = rho * V^2
-
-q = 1.225 * 50^2
-
-q = 3062.5 Pa
-
-Therefore, the dynamic pressure is 3062.5 Pa.
-"""
-
-
-# --------------------------------------------------
-# 5. SYSTEM PROMPT
-# --------------------------------------------------
-
-system_prompt = """
+    system_prompt = """
 You are an engineering solution evaluator.
 
-Your job is to evaluate a proposed solution to an engineering problem.
+Your job is to carefully evaluate a proposed solution to an
+engineering problem.
 
-Check the solution for:
+Evaluate:
 
-- correctness of the approach
+- problem understanding
+- approach
 - equations and formulas
 - mathematical reasoning
 - numerical calculations
@@ -75,59 +67,175 @@ Check the solution for:
 - assumptions
 - physical plausibility
 - final answer
-- clarity of explanation
+- explanation quality
 
-Identify specific mistakes and explain why they are mistakes.
+Identify specific errors and explain WHY they are errors.
 
-Do not only say that an answer is wrong.
-Explain the engineering reasoning behind your evaluation.
+Do not assume that the candidate solution is correct.
 
-After identifying the errors, provide a corrected solution.
+Do not simply say that something is wrong.
+Explain the engineering reasoning behind the evaluation.
+
+After identifying errors, provide a corrected solution.
+
+Do not invent information that is not supported by the problem.
 """
 
+    # --------------------------------------------------
+    # USER PROMPT
+    # --------------------------------------------------
 
-# --------------------------------------------------
-# 6. USER PROMPT
-# --------------------------------------------------
+    user_prompt = f"""
+ENGINEERING DOMAIN:
 
-user_prompt = f"""
+{domain}
+
+
 ENGINEERING QUESTION:
 
-{engineering_question}
+{question}
+
 
 CANDIDATE SOLUTION:
 
 {candidate_solution}
 
-Evaluate this solution.
+
+Evaluate the candidate solution.
 """
 
+    # --------------------------------------------------
+    # CALL THE LLM
+    # --------------------------------------------------
 
-# --------------------------------------------------
-# 7. SEND REQUEST TO THE LLM
-# --------------------------------------------------
+    response = client.chat.completions.create(
+        model="openrouter/free",
 
-response = client.chat.completions.create(
-    model="openrouter/free",
-    messages=[
-        {
-            "role": "system",
-            "content": system_prompt,
+        extra_body={
+            "provider": {
+                "require_parameters": True
+            }
         },
-        {
-            "role": "user",
-            "content": user_prompt,
-        },
-    ],
-)
 
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt,
+            },
+            {
+                "role": "user",
+                "content": user_prompt,
+            },
+        ],
 
-# --------------------------------------------------
-# 8. PRINT THE LLM'S EVALUATION
-# --------------------------------------------------
+        response_format={
+            "type": "json_schema",
 
-print("\n========== ENGINEERING AI EVALUATION ==========\n")
+            "json_schema": {
+                "name": "engineering_evaluation",
 
-print(response.choices[0].message.content)
+                "strict": True,
 
-print("\n================================================\n")
+                "schema": {
+                    "type": "object",
+
+                    "properties": {
+                        "problem_understanding": {
+                            "type": "string"
+                        },
+
+                        "approach": {
+                            "type": "string"
+                        },
+
+                        "equations": {
+                            "type": "string"
+                        },
+
+                        "calculations": {
+                            "type": "string"
+                        },
+
+                        "units": {
+                            "type": "string"
+                        },
+
+                        "assumptions": {
+                            "type": "string"
+                        },
+
+                        "physical_plausibility": {
+                            "type": "string"
+                        },
+
+                        "final_answer": {
+                            "type": "string"
+                        },
+
+                        "explanation_quality": {
+                            "type": "string"
+                        },
+
+                        "errors": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+
+                        "corrected_solution": {
+                            "type": "string"
+                        },
+
+                        "summary": {
+                            "type": "string"
+                        }
+                    },
+
+                    "required": [
+                        "problem_understanding",
+                        "approach",
+                        "equations",
+                        "calculations",
+                        "units",
+                        "assumptions",
+                        "physical_plausibility",
+                        "final_answer",
+                        "explanation_quality",
+                        "errors",
+                        "corrected_solution",
+                        "summary"
+                    ],
+
+                    "additionalProperties": False
+                }
+            }
+        }
+    )
+
+    # --------------------------------------------------
+    # GET RESPONSE FROM LLM
+    # --------------------------------------------------
+
+    raw_response = response.choices[0].message.content
+
+    if not raw_response:
+        raise ValueError("The LLM returned an empty response.")
+
+    # --------------------------------------------------
+    # CONVERT JSON TEXT → PYTHON DICTIONARY
+    # --------------------------------------------------
+
+    try:
+        evaluation = json.loads(raw_response)
+
+    except json.JSONDecodeError as error:
+        raise ValueError(
+            "The LLM returned an invalid structured response."
+        ) from error
+
+    # --------------------------------------------------
+    # RETURN RESULT TO APP.PY
+    # --------------------------------------------------
+
+    return evaluation
