@@ -7,20 +7,15 @@ from evaluator.pipeline import (
 )
 
 
-# --------------------------------------------------
+# ==================================================
 # PAGE CONFIGURATION
-# --------------------------------------------------
+# ==================================================
 
 st.set_page_config(
     page_title="Engineering AI Evaluator",
     page_icon="⚙️",
     layout="wide",
 )
-
-
-# --------------------------------------------------
-# PAGE HEADER
-# --------------------------------------------------
 
 st.title("⚙️ Engineering AI Evaluator")
 
@@ -32,9 +27,78 @@ st.write(
 st.divider()
 
 
-# --------------------------------------------------
+# ==================================================
+# SHARED FUNCTION
+# ==================================================
+
+def display_reasoning_evaluation(reasoning):
+    """
+    Display the LLM engineering reasoning evaluation.
+
+    Used by both Free Evaluation and Benchmark Evaluation
+    so we do not duplicate the same UI code.
+    """
+
+    st.subheader("📋 Overall Summary")
+
+    st.write(
+        reasoning.get(
+            "summary",
+            "No summary was returned.",
+        )
+    )
+
+    errors = reasoning.get("errors", [])
+
+    if errors:
+        st.subheader("❌ Identified Errors")
+
+        for error in errors:
+            st.write(f"• {error}")
+
+    else:
+        st.success(
+            "No major reasoning errors were identified."
+        )
+
+    st.subheader("🔍 Detailed Evaluation")
+
+    sections = {
+        "Problem Understanding": "problem_understanding",
+        "Approach": "approach",
+        "Equations": "equations",
+        "Calculations": "calculations",
+        "Units": "units",
+        "Assumptions": "assumptions",
+        "Physical Plausibility": "physical_plausibility",
+        "Final Answer": "final_answer",
+        "Explanation Quality": "explanation_quality",
+    }
+
+    for title, key in sections.items():
+
+        with st.expander(title):
+
+            st.write(
+                reasoning.get(
+                    key,
+                    "No evaluation available.",
+                )
+            )
+
+    st.subheader("✅ Corrected / Improved Solution")
+
+    st.write(
+        reasoning.get(
+            "corrected_solution",
+            "No corrected solution was returned.",
+        )
+    )
+
+
+# ==================================================
 # EVALUATION MODE
-# --------------------------------------------------
+# ==================================================
 
 evaluation_mode = st.radio(
     "Evaluation Mode",
@@ -47,7 +111,7 @@ evaluation_mode = st.radio(
 
 
 # ==================================================
-# FREE EVALUATION MODE
+# FREE EVALUATION
 # ==================================================
 
 if evaluation_mode == "Free Evaluation":
@@ -56,7 +120,8 @@ if evaluation_mode == "Free Evaluation":
 
     st.caption(
         "Evaluate any engineering problem. "
-        "This mode currently uses LLM-based reasoning evaluation."
+        "This mode uses LLM-based engineering reasoning "
+        "because no trusted reference answer is supplied."
     )
 
     domain = st.selectbox(
@@ -109,117 +174,35 @@ if evaluation_mode == "Free Evaluation":
                     "Evaluating engineering solution..."
                 ):
 
-                    evaluation = evaluate_solution(
+                    result = evaluate_solution(
                         question=question,
                         candidate_solution=candidate_solution,
                         domain=domain,
                     )
 
+                reasoning = result[
+                    "reasoning_evaluation"
+                ]
+
+                extracted = result[
+                    "extracted_answer"
+                ]
+
                 st.divider()
 
-                st.header("Engineering Evaluation")
-
-                # --------------------------------------
-                # SUMMARY
-                # --------------------------------------
-
-                st.subheader("📋 Overall Summary")
-
-                st.write(
-                    evaluation.get(
-                        "summary",
-                        "No summary was returned.",
-                    )
+                st.header(
+                    "Engineering Evaluation"
                 )
 
-
-                # --------------------------------------
-                # ERRORS
-                # --------------------------------------
-
-                st.subheader("❌ Identified Errors")
-
-                errors = evaluation.get(
-                    "errors",
-                    [],
+                st.caption(
+                    "Extracted final answer: "
+                    f"{extracted['value']} "
+                    f"{extracted['unit']}"
                 )
 
-                if errors:
-
-                    for error in errors:
-                        st.write(f"• {error}")
-
-                else:
-
-                    st.success(
-                        "No major errors were identified."
-                    )
-
-
-                # --------------------------------------
-                # DETAILED EVALUATION
-                # --------------------------------------
-
-                st.subheader(
-                    "🔍 Detailed Evaluation"
+                display_reasoning_evaluation(
+                    reasoning
                 )
-
-                sections = {
-                    "Problem Understanding":
-                        "problem_understanding",
-
-                    "Approach":
-                        "approach",
-
-                    "Equations":
-                        "equations",
-
-                    "Calculations":
-                        "calculations",
-
-                    "Units":
-                        "units",
-
-                    "Assumptions":
-                        "assumptions",
-
-                    "Physical Plausibility":
-                        "physical_plausibility",
-
-                    "Final Answer":
-                        "final_answer",
-
-                    "Explanation Quality":
-                        "explanation_quality",
-                }
-
-                for title, key in sections.items():
-
-                    with st.expander(title):
-
-                        st.write(
-                            evaluation.get(
-                                key,
-                                "No evaluation available.",
-                            )
-                        )
-
-
-                # --------------------------------------
-                # CORRECTED SOLUTION
-                # --------------------------------------
-
-                st.subheader(
-                    "✅ Corrected / Improved Solution"
-                )
-
-                st.write(
-                    evaluation.get(
-                        "corrected_solution",
-                        "No corrected solution was returned.",
-                    )
-                )
-
 
             except Exception as error:
 
@@ -233,7 +216,7 @@ if evaluation_mode == "Free Evaluation":
 
 
 # ==================================================
-# BENCHMARK EVALUATION MODE
+# BENCHMARK EVALUATION
 # ==================================================
 
 else:
@@ -241,14 +224,9 @@ else:
     st.subheader("Benchmark Evaluation")
 
     st.caption(
-        "Evaluate a candidate solution against a trusted "
-        "engineering benchmark reference."
+        "Evaluate a candidate solution against a "
+        "trusted engineering benchmark reference."
     )
-
-
-    # --------------------------------------------------
-    # LOAD BENCHMARK PROBLEM
-    # --------------------------------------------------
 
     try:
 
@@ -268,7 +246,7 @@ else:
 
 
     # --------------------------------------------------
-    # DISPLAY BENCHMARK INFORMATION
+    # BENCHMARK INFORMATION
     # --------------------------------------------------
 
     st.write(
@@ -301,7 +279,6 @@ else:
         height=250,
     )
 
-
     benchmark_button = st.button(
         "Run Benchmark Evaluation",
         type="primary",
@@ -309,7 +286,7 @@ else:
 
 
     # --------------------------------------------------
-    # RUN HYBRID PIPELINE
+    # RUN PIPELINE
     # --------------------------------------------------
 
     if benchmark_button:
@@ -333,13 +310,16 @@ else:
                         candidate_solution=candidate_solution,
                     )
 
-
                 reasoning = result[
                     "reasoning_evaluation"
                 ]
 
                 numerical = result[
                     "numerical_check"
+                ]
+
+                unit_check = result[
+                    "unit_check"
                 ]
 
                 extracted = result[
@@ -359,12 +339,8 @@ else:
 
 
                 # --------------------------------------
-                # NUMERICAL VERIFICATION
+                # ANSWERS
                 # --------------------------------------
-
-                st.subheader(
-                    "🔢 Deterministic Numerical Check"
-                )
 
                 col1, col2 = st.columns(2)
 
@@ -389,139 +365,93 @@ else:
                     )
 
 
-                percentage_error = numerical[
-                    "percentage_error"
-                ]
+                # --------------------------------------
+                # DETERMINISTIC VERIFICATION
+                # --------------------------------------
 
-                if percentage_error is not None:
+                st.subheader(
+                    "Deterministic Verification"
+                )
+
+                number_col, unit_col = st.columns(2)
+
+
+                # NUMERICAL CHECK
+
+                with number_col:
+
+                    st.markdown(
+                        "**Numerical Value**"
+                    )
+
+                    percentage_error = numerical[
+                        "percentage_error"
+                    ]
+
+                    if percentage_error is not None:
+
+                        st.write(
+                            "Percentage error: "
+                            f"{percentage_error:.2f}%"
+                        )
+
+                    if numerical["within_tolerance"]:
+
+                        st.success(
+                            "PASS — Numerical value"
+                        )
+
+                    else:
+
+                        st.error(
+                            "FAIL — Numerical value"
+                        )
+
+
+                # UNIT CHECK
+
+                with unit_col:
+
+                    st.markdown(
+                        "**Engineering Unit**"
+                    )
 
                     st.write(
-                        "**Percentage Error:** "
-                        f"{percentage_error:.2f}%"
+                        "Expected: "
+                        f"{unit_check['expected_unit']}"
                     )
 
-
-                if numerical["within_tolerance"]:
-
-                    st.success(
-                        "The numerical answer is within "
-                        "the current tolerance."
+                    st.write(
+                        "Candidate: "
+                        f"{unit_check['candidate_unit']}"
                     )
 
-                else:
+                    if unit_check["units_match"]:
 
-                    st.error(
-                        "The numerical answer is outside "
-                        "the current tolerance."
-                    )
+                        st.success(
+                            "PASS — Unit"
+                        )
+
+                    else:
+
+                        st.error(
+                            "FAIL — Unit"
+                        )
 
 
                 # --------------------------------------
                 # LLM REASONING
                 # --------------------------------------
 
+                st.divider()
+
                 st.subheader(
                     "🧠 Engineering Reasoning Evaluation"
                 )
 
-                st.write(
-                    reasoning.get(
-                        "summary",
-                        "No summary was returned.",
-                    )
+                display_reasoning_evaluation(
+                    reasoning
                 )
-
-
-                # --------------------------------------
-                # ERRORS
-                # --------------------------------------
-
-                st.subheader(
-                    "❌ Identified Errors"
-                )
-
-                errors = reasoning.get(
-                    "errors",
-                    [],
-                )
-
-                if errors:
-
-                    for error in errors:
-                        st.write(f"• {error}")
-
-                else:
-
-                    st.success(
-                        "No major reasoning errors "
-                        "were identified."
-                    )
-
-
-                # --------------------------------------
-                # DETAILED EVALUATION
-                # --------------------------------------
-
-                st.subheader(
-                    "🔍 Detailed Evaluation"
-                )
-
-                sections = {
-                    "Problem Understanding":
-                        "problem_understanding",
-
-                    "Approach":
-                        "approach",
-
-                    "Equations":
-                        "equations",
-
-                    "Calculations":
-                        "calculations",
-
-                    "Units":
-                        "units",
-
-                    "Assumptions":
-                        "assumptions",
-
-                    "Physical Plausibility":
-                        "physical_plausibility",
-
-                    "Final Answer":
-                        "final_answer",
-
-                    "Explanation Quality":
-                        "explanation_quality",
-                }
-
-                for title, key in sections.items():
-
-                    with st.expander(title):
-
-                        st.write(
-                            reasoning.get(
-                                key,
-                                "No evaluation available.",
-                            )
-                        )
-
-
-                # --------------------------------------
-                # CORRECTED SOLUTION
-                # --------------------------------------
-
-                st.subheader(
-                    "✅ Corrected / Improved Solution"
-                )
-
-                st.write(
-                    reasoning.get(
-                        "corrected_solution",
-                        "No corrected solution was returned.",
-                    )
-                )
-
 
             except Exception as error:
 
