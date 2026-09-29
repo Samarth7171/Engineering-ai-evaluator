@@ -66,24 +66,31 @@ and return null for both value and unit.
 Do not invent a numerical answer merely to satisfy the extraction structure.
 
 TASK 2:
-Evaluate the engineering solution.
+Evaluate the engineering solution using Engineering Evaluation Rubric v1.
 The engineering reasoning evaluation must still run normally for
 conceptual or non-numerical questions.
 
-Evaluate:
+Evaluate exactly these five rubric dimensions:
 
-- problem understanding
-- approach
-- equations and formulas
-- mathematical reasoning
-- numerical calculations
-- units
-- assumptions
-- physical plausibility
-- final answer
-- explanation quality
+- Problem Understanding: Did the candidate correctly understand the given
+  information, requested quantity/concept, and meaning of the problem?
+- Engineering Method: Are the chosen engineering principles, approach,
+  governing equations, formulas, and assumptions appropriate?
+- Mathematical Execution: Are substitution, algebra, arithmetic, equation
+  manipulation, and numerical calculations correct?
+- Engineering Validity: Are units, dimensions, signs, assumptions, magnitude,
+  and physical behavior reasonable?
+- Final Response Quality: Does the final response actually answer the question
+  clearly, correctly, relevantly, and with adequate support?
 
-Identify specific errors and explain WHY they are errors.
+For each dimension, return a status and explanation. Status must be one of:
+correct, partially_correct, incorrect, or not_applicable.
+Use not_applicable when a dimension genuinely does not apply. Do not invent
+calculations or errors simply to evaluate every dimension.
+
+Identify specific meaningful errors using structured error objects. Each error
+must include its rubric category, a description, and why it matters. If no
+meaningful errors are identified, return an empty errors array.
 
 Do not assume that the candidate solution is incorrect.
 If the solution is correct, clearly state that it is correct
@@ -92,7 +99,8 @@ and do not invent errors.
 Do not simply say something is wrong.
 Explain the engineering reasoning behind the evaluation.
 
-After identifying errors, provide a corrected or improved solution.
+After identifying errors, provide an improved or corrected solution generated
+by the evaluator. This corrected solution is not guaranteed ground truth.
 
 Do not invent information that is not supported by the problem.
 """
@@ -186,47 +194,171 @@ Extract the final answer and evaluate the candidate solution.
 
                             "properties": {
 
-                                "problem_understanding": {
-                                    "type": "string"
-                                },
+                                "rubric": {
+                                    "type": "object",
 
-                                "approach": {
-                                    "type": "string"
-                                },
+                                    "properties": {
+                                        "problem_understanding": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "correct",
+                                                        "partially_correct",
+                                                        "incorrect",
+                                                        "not_applicable"
+                                                    ]
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "explanation"
+                                            ],
+                                            "additionalProperties": False
+                                        },
 
-                                "equations": {
-                                    "type": "string"
-                                },
+                                        "engineering_method": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "correct",
+                                                        "partially_correct",
+                                                        "incorrect",
+                                                        "not_applicable"
+                                                    ]
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "explanation"
+                                            ],
+                                            "additionalProperties": False
+                                        },
 
-                                "calculations": {
-                                    "type": "string"
-                                },
+                                        "mathematical_execution": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "correct",
+                                                        "partially_correct",
+                                                        "incorrect",
+                                                        "not_applicable"
+                                                    ]
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "explanation"
+                                            ],
+                                            "additionalProperties": False
+                                        },
 
-                                "units": {
-                                    "type": "string"
-                                },
+                                        "engineering_validity": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "correct",
+                                                        "partially_correct",
+                                                        "incorrect",
+                                                        "not_applicable"
+                                                    ]
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "explanation"
+                                            ],
+                                            "additionalProperties": False
+                                        },
 
-                                "assumptions": {
-                                    "type": "string"
-                                },
+                                        "final_response_quality": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "correct",
+                                                        "partially_correct",
+                                                        "incorrect",
+                                                        "not_applicable"
+                                                    ]
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "explanation"
+                                            ],
+                                            "additionalProperties": False
+                                        }
+                                    },
 
-                                "physical_plausibility": {
-                                    "type": "string"
-                                },
+                                    "required": [
+                                        "problem_understanding",
+                                        "engineering_method",
+                                        "mathematical_execution",
+                                        "engineering_validity",
+                                        "final_response_quality"
+                                    ],
 
-                                "final_answer": {
-                                    "type": "string"
-                                },
-
-                                "explanation_quality": {
-                                    "type": "string"
+                                    "additionalProperties": False
                                 },
 
                                 "errors": {
                                     "type": "array",
 
                                     "items": {
-                                        "type": "string"
+                                        "type": "object",
+
+                                        "properties": {
+                                            "category": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "problem_understanding",
+                                                    "engineering_method",
+                                                    "mathematical_execution",
+                                                    "engineering_validity",
+                                                    "final_response_quality"
+                                                ]
+                                            },
+
+                                            "description": {
+                                                "type": "string"
+                                            },
+
+                                            "why_it_matters": {
+                                                "type": "string"
+                                            }
+                                        },
+
+                                        "required": [
+                                            "category",
+                                            "description",
+                                            "why_it_matters"
+                                        ],
+
+                                        "additionalProperties": False
                                     }
                                 },
 
@@ -240,15 +372,7 @@ Extract the final answer and evaluate the candidate solution.
                             },
 
                             "required": [
-                                "problem_understanding",
-                                "approach",
-                                "equations",
-                                "calculations",
-                                "units",
-                                "assumptions",
-                                "physical_plausibility",
-                                "final_answer",
-                                "explanation_quality",
+                                "rubric",
                                 "errors",
                                 "corrected_solution",
                                 "summary"

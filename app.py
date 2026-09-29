@@ -44,13 +44,39 @@ def display_reasoning_evaluation(reasoning):
         )
     )
 
+    dimension_labels = {
+        "problem_understanding": "Problem Understanding",
+        "engineering_method": "Engineering Method",
+        "mathematical_execution": "Mathematical Execution",
+        "engineering_validity": "Engineering Validity",
+        "final_response_quality": "Final Response Quality",
+    }
+
+    status_labels = {
+        "correct": "Correct",
+        "partially_correct": "Partially Correct",
+        "incorrect": "Incorrect",
+        "not_applicable": "Not Applicable",
+    }
+
     errors = reasoning.get("errors", [])
 
     if errors:
         st.subheader("❌ Identified Errors")
 
         for error in errors:
-            st.write(f"• {error}")
+            category = error.get("category", "")
+            category_label = dimension_labels.get(
+                category,
+                category.replace("_", " ").title(),
+            )
+
+            st.markdown(f"**{category_label}**")
+            st.write(error.get("description", ""))
+            st.write(
+                "**Why it matters:** "
+                f"{error.get('why_it_matters', '')}"
+            )
 
     else:
         st.success(
@@ -59,25 +85,24 @@ def display_reasoning_evaluation(reasoning):
 
     st.subheader("🔍 Detailed Evaluation")
 
-    sections = {
-        "Problem Understanding": "problem_understanding",
-        "Approach": "approach",
-        "Equations": "equations",
-        "Calculations": "calculations",
-        "Units": "units",
-        "Assumptions": "assumptions",
-        "Physical Plausibility": "physical_plausibility",
-        "Final Answer": "final_answer",
-        "Explanation Quality": "explanation_quality",
-    }
+    rubric = reasoning.get("rubric", {})
 
-    for title, key in sections.items():
+    for key, title in dimension_labels.items():
+
+        dimension = rubric.get(key, {})
+        status = dimension.get("status", "")
+        status_label = status_labels.get(
+            status,
+            status.replace("_", " ").title(),
+        )
 
         with st.expander(title):
 
+            st.write(f"**Status:** {status_label}")
+
             st.write(
-                reasoning.get(
-                    key,
+                dimension.get(
+                    "explanation",
                     "No evaluation available.",
                 )
             )
