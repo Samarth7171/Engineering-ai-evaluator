@@ -168,17 +168,30 @@ if evaluate_button:
                 "extracted_answer"
             ]
 
+            has_numerical_answer = extracted[
+                "has_numerical_answer"
+            ]
+
             st.divider()
 
             st.header(
                 "Engineering Evaluation"
             )
 
-            st.caption(
-                "Extracted final answer: "
-                f"{extracted['value']} "
-                f"{extracted['unit']}"
-            )
+            if has_numerical_answer:
+
+                st.caption(
+                    "Extracted final answer: "
+                    f"{extracted['value']} "
+                    f"{extracted['unit']}"
+                )
+
+            else:
+
+                st.caption(
+                    "No numerical final answer detected — "
+                    "evaluating engineering reasoning."
+                )
 
             display_reasoning_evaluation(
                 reasoning

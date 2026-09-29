@@ -35,14 +35,15 @@ client = OpenAI(
 
 def evaluate_solution(question, candidate_solution, domain):
     """
-    Evaluate an engineering solution and extract its
-    final numerical answer using one LLM call.
+    Evaluate an engineering solution and, when present,
+    extract its final numerical answer using one LLM call.
 
     Returns:
         {
             "extracted_answer": {
-                "value": number,
-                "unit": string
+                "has_numerical_answer": boolean,
+                "value": number or null,
+                "unit": string or null
             },
             "reasoning_evaluation": {
                 ...
@@ -56,12 +57,18 @@ You are an engineering solution evaluator.
 You have TWO tasks.
 
 TASK 1:
-Extract the final numerical answer stated by the candidate.
-Extract the final result, not an intermediate calculation.
-Also extract the unit exactly as used by the candidate.
+Determine whether the candidate clearly states a final numerical answer.
+If a final numerical answer exists, set has_numerical_answer to true,
+extract the final result rather than an intermediate calculation, and
+extract its unit exactly as used by the candidate.
+If no final numerical answer exists, set has_numerical_answer to false
+and return null for both value and unit.
+Do not invent a numerical answer merely to satisfy the extraction structure.
 
 TASK 2:
 Evaluate the engineering solution.
+The engineering reasoning evaluation must still run normally for
+conceptual or non-numerical questions.
 
 Evaluate:
 
@@ -146,16 +153,27 @@ Extract the final answer and evaluate the candidate solution.
                             "type": "object",
 
                             "properties": {
+                                "has_numerical_answer": {
+                                    "type": "boolean"
+                                },
+
                                 "value": {
-                                    "type": "number"
+                                    "type": [
+                                        "number",
+                                        "null"
+                                    ]
                                 },
 
                                 "unit": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 }
                             },
 
                             "required": [
+                                "has_numerical_answer",
                                 "value",
                                 "unit"
                             ],
