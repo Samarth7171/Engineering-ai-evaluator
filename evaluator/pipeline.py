@@ -1,7 +1,11 @@
 import json
 from pathlib import Path
 
-from evaluator.deterministic_checks import evaluate_numerical_answer
+from evaluator.deterministic_checks import (
+    evaluate_numerical_answer,
+    evaluate_unit,
+)
+
 from evaluator.llm_evaluator import evaluate_solution
 
 
@@ -23,7 +27,6 @@ def load_benchmark_problem(problem_id):
         "r",
         encoding="utf-8"
     ) as file:
-
         benchmark_data = json.load(file)
 
     for problem in benchmark_data:
@@ -53,6 +56,7 @@ def run_benchmark_evaluation(
 
     Python performs:
     - deterministic numerical verification
+    - deterministic unit verification
     """
 
     # --------------------------------------------------
@@ -76,7 +80,7 @@ def run_benchmark_evaluation(
 
 
     # --------------------------------------------------
-    # STEP 3: SEPARATE THE TWO LLM OUTPUTS
+    # STEP 3: SEPARATE LLM OUTPUTS
     # --------------------------------------------------
 
     extracted_answer = llm_result[
@@ -89,7 +93,7 @@ def run_benchmark_evaluation(
 
 
     # --------------------------------------------------
-    # STEP 4: DETERMINISTIC PYTHON CHECK
+    # STEP 4: DETERMINISTIC NUMERICAL CHECK
     # --------------------------------------------------
 
     numerical_check = evaluate_numerical_answer(
@@ -100,20 +104,25 @@ def run_benchmark_evaluation(
 
 
     # --------------------------------------------------
-    # STEP 5: COMBINE EVERYTHING
+    # STEP 5: DETERMINISTIC UNIT CHECK
+    # --------------------------------------------------
+
+    unit_check = evaluate_unit(
+        expected_unit=problem["expected_unit"],
+        candidate_unit=extracted_answer["unit"],
+    )
+
+
+    # --------------------------------------------------
+    # STEP 6: COMBINE EVERYTHING
     # --------------------------------------------------
 
     result = {
         "problem": problem,
-
-        "extracted_answer":
-            extracted_answer,
-
-        "numerical_check":
-            numerical_check,
-
-        "reasoning_evaluation":
-            reasoning_evaluation,
+        "extracted_answer": extracted_answer,
+        "numerical_check": numerical_check,
+        "unit_check": unit_check,
+        "reasoning_evaluation": reasoning_evaluation,
     }
 
     return result
@@ -125,16 +134,22 @@ def run_benchmark_evaluation(
 
 if __name__ == "__main__":
 
+    # Correct numerical value,
+    # deliberately WRONG unit.
+
     test_solution = """
     Dynamic pressure is calculated using:
 
-    q = rho * V^2
+    q = 0.5 * rho * V^2
 
-    q = 1.225 * 50^2
+    Given:
+    rho = 1.225 kg/m^3
+    V = 50 m/s
 
-    q = 3062.5 Pa
+    q = 0.5 * 1.225 * 50^2
+    q = 1531.25
 
-    Therefore, the dynamic pressure is 3062.5 Pa.
+    Therefore, the dynamic pressure is 1531.25 m/s.
     """
 
     result = run_benchmark_evaluation(
@@ -155,9 +170,16 @@ if __name__ == "__main__":
     )
 
 
+    print("\nDeterministic unit check:")
+    print(
+        result["unit_check"]
+    )
+
+
     print("\nLLM reasoning summary:")
     print(
         result[
             "reasoning_evaluation"
         ]["summary"]
     )
+    
