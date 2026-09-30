@@ -256,18 +256,42 @@ Evaluate the engineering solution using Engineering Evaluation Rubric v1.
 The engineering reasoning evaluation must still run normally for
 conceptual or non-numerical questions.
 
+Use this engineering verification sequence to guide the evaluation:
+1. Identify what the problem asks and the relevant given information.
+2. Independently identify the governing engineering principle, equation,
+   or conceptual relationship before judging the candidate's method.
+3. Check whether the candidate selected and applied that principle correctly.
+4. Check substitution, algebra, arithmetic, differentiation, integration,
+   and other mathematical execution separately from the engineering method.
+5. Check units, dimensions, signs, assumptions, applicability conditions,
+   magnitudes, and physical plausibility.
+6. Check whether the final response clearly answers the question.
+7. Classify each meaningful error by its primary root cause.
+
+Do not output this verification sequence or any hidden reasoning trace.
+Return only the required structured evaluation. Do not accept a governing
+equation or conceptual relationship merely because the candidate applies it
+consistently. Verify it against the relevant engineering principles.
+
 Evaluate exactly these five rubric dimensions:
 
-- Problem Understanding: Did the candidate correctly understand the given
-  information, requested quantity/concept, and meaning of the problem?
-- Engineering Method: Are the chosen engineering principles, approach,
-  governing equations, formulas, and assumptions appropriate?
-- Mathematical Execution: Are substitution, algebra, arithmetic, equation
-  manipulation, and numerical calculations correct?
-- Engineering Validity: Are units, dimensions, signs, assumptions, magnitude,
-  and physical behavior reasonable?
-- Final Response Quality: Does the final response actually answer the question
-  clearly, correctly, relevantly, and with adequate support?
+- Problem Understanding: Use this when the candidate misunderstands the
+  problem statement, requested quantity or concept, given information, or
+  physical situation.
+- Engineering Method: Use this when the candidate selects or applies the wrong
+  engineering principle, governing equation, formula, or solution method, or
+  omits a required term. Internally consistent calculations do not make an
+  incorrect engineering relationship valid.
+- Mathematical Execution: Use this when the engineering method is appropriate,
+  but substitution, algebra, arithmetic, equation manipulation,
+  differentiation, integration, or another calculation step is incorrect.
+- Engineering Validity: Use this when the reasoning violates engineering
+  constraints involving units, dimensions, signs, assumptions, applicability
+  conditions, magnitude, physical plausibility, or interpretation of the
+  physical result.
+- Final Response Quality: Use this when the underlying solution may be correct,
+  but the final response is unclear, incomplete, contradictory, irrelevant,
+  unsupported, or does not clearly answer the question.
 
 For each dimension, return a status and explanation. Status must be one of:
 correct, partially_correct, incorrect, or not_applicable.
@@ -277,6 +301,9 @@ calculations or errors simply to evaluate every dimension.
 Identify specific meaningful errors using structured error objects. Each error
 must include its rubric category, a description, and why it matters. If no
 meaningful errors are identified, return an empty errors array.
+Assign each error to the category that best represents its primary root cause,
+not merely a downstream consequence. Do not duplicate one root error across
+multiple categories unless there are genuinely independent errors.
 
 Do not assume that the candidate solution is incorrect.
 If the solution is correct, clearly state that it is correct

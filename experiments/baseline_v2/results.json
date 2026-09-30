@@ -1,0 +1,1049 @@
+{
+  "run_metadata": {
+    "runner": "Engineering AI Evaluator Benchmark v1",
+    "started_at_utc": "2026-09-30T15:29:53.537476+00:00",
+    "completed_at_utc": "2026-09-30T16:25:25.152422+00:00",
+    "benchmark_case_count": 30
+  },
+  "case_results": [
+    {
+      "id": "FM-001",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 3062.5,
+      "extracted_unit": "Pa",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 1531.25,
+        "candidate": 3062.5,
+        "absolute_error": 1531.25,
+        "percentage_error": 100.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "Pa",
+        "candidate_unit": "Pa",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution contains a critical error in the formula for dynamic pressure, leading to an incorrect numerical answer. The corrected dynamic pressure is 1531.25 Pa.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used the incorrect formula for dynamic pressure, q = ρ V², instead of the correct formula q = ½ ρ V².",
+          "why_it_matters": "This error results in an overestimation of the dynamic pressure by a factor of 2, leading to an incorrect value. In fluid mechanics, dynamic pressure is critical for calculations like Bernoulli's equation or aerodynamic forces, and using the wrong formula can cause significant errors in engineering designs and analyses."
+        }
+      ]
+    },
+    {
+      "id": "FM-002",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": true,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "EvaluationResponseError",
+        "message": "The evaluation service returned an invalid structured response. Please retry."
+      },
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    },
+    {
+      "id": "FM-003",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 4,
+      "extracted_unit": "m/s",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 8,
+        "candidate": 4,
+        "absolute_error": 4,
+        "percentage_error": 50.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "m/s",
+        "candidate_unit": "m/s",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is incorrect due to the misuse of the continuity equation. The correct velocity is 8 m/s, not 4 m/s.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used the formula D1 * V1 = D2 * V2, which is incorrect for pipe flow. The correct continuity equation for incompressible flow is A1 * V1 = A2 * V2, where A is the cross-sectional area. Since area is proportional to the square of the diameter, the velocity should be calculated as V2 = V1 * (D1/D2)², not V2 = V1 * (D1/D2).",
+          "why_it_matters": "This error leads to an incorrect velocity calculation. The candidate's result of 4 m/s is half the correct value of 8 m/s, which could have implications in engineering design, such as underestimating flow velocity and potential pressure changes."
+        }
+      ]
+    },
+    {
+      "id": "FM-004",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method",
+        "engineering_validity"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [
+        "engineering_validity"
+      ],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 300,
+      "extracted_unit": "kPa gauge",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 250.95,
+        "candidate": 300,
+        "absolute_error": 49.05000000000001,
+        "percentage_error": 19.545726240286914,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "kPa",
+        "candidate_unit": "kPa gauge",
+        "units_match": false
+      },
+      "evaluator_summary": "The candidate correctly identified that the flow velocities are equal due to the constant pipe diameter. However, they incorrectly concluded that the pressures must also be equal, completely neglecting the effect of the 5 m elevation gain. In fluid mechanics, as a fluid flows upward, pressure decreases to overcome gravity (hydrostatic pressure drop). The correct approach is to apply Bernoulli's equation, which shows that the pressure at point 2 must be lower than at point 1 by ρg(z2 - z1) = 49.05 kPa, resulting in a gauge pressure of 250.95 kPa.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate failed to apply Bernoulli's equation, which is the governing principle for steady, frictionless flow. Instead, they used the incorrect assumption that equal velocities imply equal pressures, completely neglecting the change in elevation.",
+          "why_it_matters": "Bernoulli's equation is essential for relating pressure, velocity, and elevation in fluid dynamics. Ignoring it prevents accounting for the conversion of pressure energy into potential energy as the fluid flows upward."
+        },
+        {
+          "category": "engineering_validity",
+          "description": "The conclusion that the pressure remains constant at 300 kPa gauge as the fluid rises 5 meters is physically impossible. To push water up a vertical pipe, the pressure at the inlet must be higher than at the outlet to overcome the hydrostatic head (ρgh).",
+          "why_it_matters": "A constant pressure would mean no net force is doing work to lift the fluid against gravity, violating the law of conservation of energy. The pressure must decrease by at least ρg(z2 - z1) = 49.05 kPa."
+        }
+      ]
+    },
+    {
+      "id": "FM-005",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_validity"
+      ],
+      "detected_error_categories": [
+        "engineering_validity"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 3000,
+      "extracted_unit": "Pa",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 3000,
+        "candidate": 3000,
+        "absolute_error": 0,
+        "percentage_error": 0.0,
+        "tolerance": 2,
+        "within_tolerance": true
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "Pa",
+        "units_match": false
+      },
+      "evaluator_summary": "The candidate solution has a critical unit error where force is incorrectly labeled as pressure. The numerical calculation is correct, but the final answer is invalid due to the wrong unit. The corrected solution is provided above.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_validity",
+          "description": "The candidate incorrectly stated the unit of force as Pa (pascal) instead of N (newton). Pascal is a unit of pressure, not force. This is a critical error in unit handling.",
+          "why_it_matters": "In engineering, correct units are essential for clear communication and safety. Mislabeling force as pressure could lead to misinterpretation and potential errors in design or analysis."
+        }
+      ]
+    },
+    {
+      "id": "FM-006",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": 170,
+      "extracted_unit": "kPa gauge",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 170,
+        "candidate": 170,
+        "absolute_error": 0,
+        "percentage_error": 0.0,
+        "tolerance": 2,
+        "within_tolerance": true
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "kPa",
+        "candidate_unit": "kPa gauge",
+        "units_match": false
+      },
+      "evaluator_summary": "All dimensions are correct. No errors found.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "AE-001",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 15680,
+      "extracted_unit": "N",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 7840,
+        "candidate": 15680,
+        "absolute_error": 7840,
+        "percentage_error": 100.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "N",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate's solution is incorrect due to a missing 1/2 factor in the lift equation. The arithmetic is correct, but the final answer is double the true value. The corrected lift is 7840 N.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used L = rho * V^2 * S * CL, which is missing the required factor of 1/2. The correct lift formula is L = (1/2) * rho * V^2 * S * CL.",
+          "why_it_matters": "Omitting the 1/2 factor doubles the calculated lift, leading to an incorrect and physically unrealistic result."
+        }
+      ]
+    },
+    {
+      "id": "AE-002",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "problem_understanding"
+      ],
+      "missing_required_categories": [
+        "engineering_method"
+      ],
+      "additional_detected_categories": [
+        "problem_understanding"
+      ],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect due to a fundamental misunderstanding of aerodynamic stall. The corrected solution explains the actual behavior beyond the stall angle.",
+      "evaluator_errors": [
+        {
+          "category": "problem_understanding",
+          "description": "The candidate claims that lift continues increasing indefinitely beyond the stall angle, which is incorrect. In aerodynamics, when the angle of attack exceeds the critical angle (stall angle), airflow separation occurs, leading to a sudden reduction in lift and an increase in drag.",
+          "why_it_matters": "This misconception reflects a fundamental misunderstanding of the stall phenomenon, which is essential for understanding aircraft performance, safety, and control."
+        }
+      ]
+    },
+    {
+      "id": "AE-003",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [
+        "mathematical_execution"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 468,
+      "extracted_unit": "N",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 432,
+        "candidate": 468,
+        "absolute_error": 36,
+        "percentage_error": 8.333333333333332,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "N",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate demonstrated a good understanding of the aerodynamic concepts and correctly applied the drag force formula. However, they made a simple arithmetic error during the final calculation, resulting in an incorrect value of 468 N instead of the correct 432 N.",
+      "evaluator_errors": [
+        {
+          "category": "mathematical_execution",
+          "description": "The candidate performed the multiplication incorrectly. The product of 0.5 * 1.2 * 900 * 2.0 * 0.40 is 432, but they calculated 468.",
+          "why_it_matters": "An arithmetic mistake leads to an incorrect final force value, which could cause errors in structural design, fuel efficiency estimates, or aerodynamic performance analysis."
+        }
+      ]
+    },
+    {
+      "id": "AE-004",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "problem_understanding"
+      ],
+      "detected_error_categories": [
+        "problem_understanding"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 14400,
+      "extracted_unit": "N",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 12000,
+        "candidate": 14400,
+        "absolute_error": 2400,
+        "percentage_error": 20.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "N",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is incorrect due to a fundamental misunderstanding of the flight condition. The correct lift force is 12000 N.",
+      "evaluator_errors": [
+        {
+          "category": "problem_understanding",
+          "description": "The candidate misinterpreted 'steady, level, unaccelerated flight' by adding a climbing margin, but in such flight conditions, lift must equal weight to maintain altitude.",
+          "why_it_matters": "This misunderstanding leads to an incorrect lift force, which would imply the aircraft is climbing rather than in level flight."
+        }
+      ]
+    },
+    {
+      "id": "AE-005",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": 8820,
+      "extracted_unit": "N",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 8820,
+        "candidate": 8820,
+        "absolute_error": 0,
+        "percentage_error": 0.0,
+        "tolerance": 2,
+        "within_tolerance": true
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "N",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is completely correct. All dimensions of the rubric are satisfied, and no errors were found.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "AE-006",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is correct and well-reasoned. No errors were identified.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "TH-001",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "EvaluationResponseError",
+        "message": "The evaluation service returned an invalid structured response. Please retry."
+      },
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [],
+      "missing_required_categories": [
+        "mathematical_execution"
+      ],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    },
+    {
+      "id": "TH-002",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is correct and complete. It accurately explains the first law of thermodynamics for a closed system with a clear sign convention. No errors were identified.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "TH-003",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_validity"
+      ],
+      "detected_error_categories": [
+        "engineering_method"
+      ],
+      "missing_required_categories": [
+        "engineering_validity"
+      ],
+      "additional_detected_categories": [
+        "engineering_method"
+      ],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 110,
+      "extracted_unit": "kJ",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 50,
+        "candidate": 110,
+        "absolute_error": 60,
+        "percentage_error": 120.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "kJ",
+        "candidate_unit": "kJ",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is incorrect due to a fundamental error in applying the first law of thermodynamics. The correct change in internal energy is 50 kJ.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used the incorrect formula ΔU = Q + W instead of the correct formula ΔU = Q - W for the given sign convention. This error stems from a misunderstanding of the first law of thermodynamics.",
+          "why_it_matters": "Using the wrong formula leads to an incorrect calculation of the change in internal energy, which is a fundamental concept in thermodynamics. The correct formula accounts for the fact that work done by the system reduces the internal energy, while heat added increases it."
+        }
+      ]
+    },
+    {
+      "id": "TH-004",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 70,
+      "extracted_unit": "%",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 30,
+        "candidate": 70,
+        "absolute_error": 40,
+        "percentage_error": 133.33333333333331,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "%",
+        "candidate_unit": "%",
+        "units_match": true
+      },
+      "evaluator_summary": "The solution is incorrect due to a fundamental error in the formula for thermal efficiency. The correct efficiency is 30%.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used the formula η = Q_out / Q_in instead of the correct η = W_net / Q_in for thermal efficiency.",
+          "why_it_matters": "This error misdefines thermal efficiency, which should measure the ratio of net work output to heat input. Using heat rejected leads to an incorrect result that does not reflect the engine's performance."
+        }
+      ]
+    },
+    {
+      "id": "TH-005",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "EvaluationResponseError",
+        "message": "The evaluation service returned an invalid structured response. Please retry."
+      },
+      "expected_error_categories": [
+        "engineering_validity"
+      ],
+      "detected_error_categories": [],
+      "missing_required_categories": [
+        "engineering_validity"
+      ],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    },
+    {
+      "id": "TH-006",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": 500,
+      "extracted_unit": "K",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 500,
+        "candidate": 500,
+        "absolute_error": 0,
+        "percentage_error": 0.0,
+        "tolerance": 2,
+        "within_tolerance": true
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "K",
+        "candidate_unit": "K",
+        "units_match": true
+      },
+      "evaluator_summary": "All evaluation dimensions are correct; no errors were found.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "EM-001",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [
+        "mathematical_execution"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect due to errors in differentiating the linear and constant terms. The correct derivative is f'(x) = 6x + 2.",
+      "evaluator_errors": [
+        {
+          "category": "mathematical_execution",
+          "description": "The candidate incorrectly differentiated the term 2x. The derivative of 2x is 2, but the candidate stated it as 0.",
+          "why_it_matters": "This error results in the missing linear term in the derivative, leading to an incorrect function."
+        },
+        {
+          "category": "mathematical_execution",
+          "description": "The candidate incorrectly differentiated the constant term 5. The derivative of a constant is 0, but the candidate stated it as 5.",
+          "why_it_matters": "This error adds an incorrect constant term to the derivative."
+        }
+      ]
+    },
+    {
+      "id": "EM-002",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is entirely correct. All rubric dimensions are evaluated as correct, and no errors are identified.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "EM-003",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [
+        "mathematical_execution"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 10,
+      "extracted_unit": "m",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 12,
+        "candidate": 10,
+        "absolute_error": 2,
+        "percentage_error": 16.666666666666664,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "m",
+        "candidate_unit": "m",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate's approach is conceptually correct but contains a simple arithmetic error in evaluating the antiderivative at the upper limit. The final answer of 10 m is incorrect; the correct displacement is 12 m.",
+      "evaluator_errors": [
+        {
+          "category": "mathematical_execution",
+          "description": "The candidate incorrectly evaluated 2³ as 6 instead of 8, leading to an erroneous displacement of 10 m.",
+          "why_it_matters": "This arithmetic mistake results in an incorrect final answer, which would be considered wrong in any engineering application."
+        }
+      ]
+    },
+    {
+      "id": "EM-004",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "EvaluationResponseError",
+        "message": "The evaluation service returned an invalid structured response. Please retry."
+      },
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [],
+      "missing_required_categories": [
+        "mathematical_execution"
+      ],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    },
+    {
+      "id": "EM-005",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "final_response_quality"
+      ],
+      "detected_error_categories": [
+        "final_response_quality"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 4,
+      "extracted_unit": null,
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 5,
+        "candidate": 4,
+        "absolute_error": 1,
+        "percentage_error": 20.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate correctly solves the equation but makes an error in stating the final answer. The solution should conclude with x = 5.",
+      "evaluator_errors": [
+        {
+          "category": "final_response_quality",
+          "description": "The candidate correctly derives x = 5 but incorrectly states the final answer as x = 4.",
+          "why_it_matters": "The final answer does not match the derived solution, resulting in an incorrect response to the problem."
+        }
+      ]
+    },
+    {
+      "id": "EM-006",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": 42.07,
+      "extracted_unit": "degrees C",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 42.07,
+        "candidate": 42.07,
+        "absolute_error": 0.0,
+        "percentage_error": 0.0,
+        "tolerance": 2,
+        "within_tolerance": true
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "degrees C",
+        "candidate_unit": "degrees C",
+        "units_match": true
+      },
+      "evaluator_summary": "The solution is correct in all aspects.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "PR-001",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_validity",
+        "problem_understanding"
+      ],
+      "missing_required_categories": [
+        "engineering_method"
+      ],
+      "additional_detected_categories": [
+        "engineering_validity",
+        "problem_understanding"
+      ],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect. It fails to explain the pressure term and incorrectly asserts that it can always be ignored. The corrected solution explains both terms and clarifies that the pressure term is significant except when Pe = Pa.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_validity",
+          "description": "The candidate claims that the pressure term (Pe - Pa) * Ae can always be ignored and that thrust comes solely from exhaust momentum. This is physically incorrect; the pressure term contributes whenever there is a pressure difference between the nozzle exit and the ambient environment.",
+          "why_it_matters": "Ignoring the pressure term leads to an incomplete and inaccurate understanding of rocket thrust. In vacuum or off-design conditions, the pressure term can be a significant fraction of the total thrust, and its omission would cause large prediction errors."
+        },
+        {
+          "category": "problem_understanding",
+          "description": "The candidate did not explain the terms as requested; instead, they dismissed one term entirely and provided an incorrect simplification.",
+          "why_it_matters": "The question explicitly asks to explain the terms that contribute to thrust using the given equation. Failing to address the pressure term means the answer does not satisfy the prompt."
+        }
+      ]
+    },
+    {
+      "id": "PR-002",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": true,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "EvaluationResponseError",
+        "message": "The evaluation service returned an invalid structured response. Please retry."
+      },
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    },
+    {
+      "id": "PR-003",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method",
+        "engineering_validity"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [
+        "engineering_validity"
+      ],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 24525,
+      "extracted_unit": "s",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 254.84,
+        "candidate": 24525,
+        "absolute_error": 24270.16,
+        "percentage_error": 9523.685449693927,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "s",
+        "candidate_unit": "s",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution contains a critical error in the formula for specific impulse, leading to an incorrect result with inconsistent units and unrealistic magnitude. The arithmetic is correct, but the engineering approach is flawed.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used the incorrect formula Isp = F * g0 / mdot instead of the correct formula Isp = F / (mdot * g0).",
+          "why_it_matters": "This error leads to a fundamentally wrong calculation, as specific impulse is defined as thrust divided by the weight flow rate of propellant, not multiplied by g0."
+        },
+        {
+          "category": "engineering_validity",
+          "description": "The calculated value of 24525 s has inconsistent units (m²/s³ instead of seconds) and an unrealistic magnitude for specific impulse.",
+          "why_it_matters": "Specific impulse must have units of time, and typical values for rocket engines are in the range of 200-400 s. The unit inconsistency confirms the formula error, and the unrealistic magnitude indicates a misunderstanding of the physical concept."
+        }
+      ]
+    },
+    {
+      "id": "PR-004",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [],
+      "missing_required_categories": [
+        "mathematical_execution"
+      ],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 10000,
+      "extracted_unit": "N",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 11000,
+        "candidate": 10000,
+        "absolute_error": 1000,
+        "percentage_error": 9.090909090909092,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "N",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is correct in all aspects. No errors were found in problem understanding, engineering method, mathematical execution, engineering validity, or final response quality.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "PR-005",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_validity"
+      ],
+      "detected_error_categories": [
+        "engineering_validity",
+        "problem_understanding"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [
+        "problem_understanding"
+      ],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect. The pressure-thrust term (Pe - Pa)*Ae is negative when Pe < Pa, as in an overexpanded nozzle. The physical implication is that this negative thrust reduces the overall thrust, which is a key consideration in nozzle design.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_validity",
+          "description": "The candidate incorrectly states that the pressure-thrust term is positive when Pe < Pa. In reality, (Pe - Pa) is negative when Pe < Pa, so the term (Pe - Pa)*Ae must be negative.",
+          "why_it_matters": "This error leads to a fundamental misunderstanding of nozzle performance. The sign of the pressure-thrust term is critical for determining whether it contributes to or detracts from the total thrust. Misinterpreting this sign can result in incorrect design decisions and performance predictions for rocket nozzles."
+        },
+        {
+          "category": "problem_understanding",
+          "description": "The candidate fails to recognize that the pressure-thrust term can be negative when Pe < Pa, and instead claims that any pressure difference adds thrust, which is incorrect.",
+          "why_it_matters": "Proper understanding of the pressure-thrust term is essential for analyzing nozzle expansion ratios and optimizing thrust in different ambient conditions. This misunderstanding could lead to errors in engineering applications."
+        }
+      ]
+    },
+    {
+      "id": "PR-006",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": true,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "EvaluationRequestError",
+        "message": "The evaluation service request failed. Please retry."
+      },
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    }
+  ],
+  "aggregate_counts": {
+    "total_cases": 30,
+    "completed_evaluations": 24,
+    "api_or_evaluation_failures": 6,
+    "intentionally_incorrect_cases": 20,
+    "required_root_error_detections_passed": 13,
+    "required_root_error_detections_failed": 4,
+    "intentionally_correct_cases": 10,
+    "false_positive_tests_passed": 7,
+    "false_positive_tests_failed": 0
+  }
+}

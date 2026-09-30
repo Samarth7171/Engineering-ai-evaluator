@@ -38,6 +38,90 @@
     "notes": "False-positive control case. A correct solution should not be assigned invented errors."
   },
   {
+  "id": "FM-003",
+  "domain": "Fluid Mechanics",
+  "difficulty": "Easy",
+  "question": "Water flows steadily through a pipe that decreases in diameter from 100 mm to 50 mm. If the velocity in the 100 mm section is 2 m/s, calculate the velocity in the 50 mm section. Assume incompressible flow.",
+  "reference_solution": "For steady incompressible flow, continuity gives A1 * V1 = A2 * V2. For a circular pipe, area is proportional to diameter squared, so A1/A2 = (D1/D2)^2 = (100/50)^2 = 4. Therefore, V2 = (A1/A2) * V1 = 4 * 2 = 8 m/s.",
+  "candidate_solution": "Using continuity, D1 * V1 = D2 * V2. Therefore, V2 = (D1/D2) * V1 = (100/50) * 2 = 4 m/s. The velocity in the smaller section is 4 m/s.",
+  "candidate_is_correct": false,
+  "injected_error": "The candidate incorrectly uses the pipe diameter directly in the continuity equation instead of cross-sectional area. For a circular pipe, area is proportional to diameter squared.",
+  "expected_error_categories": [
+    "engineering_method"
+  ],
+  "expected_numerical_answer": 8,
+  "expected_unit": "m/s",
+  "important_assumptions": [
+    "The flow is steady.",
+    "The fluid is incompressible.",
+    "The pipe sections are circular.",
+    "There is no mass addition or removal between the two sections."
+  ],
+  "notes": "Tests whether the evaluator recognizes misuse of diameter instead of cross-sectional area in the continuity equation. The candidate arithmetic is internally correct after applying the incorrect relationship."
+},
+  {
+    "id": "FM-004",
+    "domain": "Fluid Mechanics",
+    "difficulty": "Medium",
+    "question": "Water flows steadily upward through a constant-diameter pipe from point 1 at elevation z1 = 0 m to point 2 at elevation z2 = 5 m. The pressure at point 1 is 300 kPa gauge. Neglect losses and use rho = 1000 kg/m^3 and g = 9.81 m/s^2. Calculate the gauge pressure at point 2.",
+    "reference_solution": "For steady incompressible flow in a constant-diameter pipe, V1 = V2. Bernoulli's equation therefore reduces to P1 + rho*g*z1 = P2 + rho*g*z2. Thus P2 = 300000 - 1000*9.81*5 = 250950 Pa = 250.95 kPa gauge.",
+    "candidate_solution": "Because the pipe diameter is unchanged, continuity gives V1 = V2. Equal velocities mean the pressures are also equal, so P2 = P1 = 300 kPa gauge.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate assumes equal velocity implies equal pressure and omits the elevation term from Bernoulli's equation.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": 250.95,
+    "expected_unit": "kPa",
+    "important_assumptions": [
+      "The flow is steady and incompressible.",
+      "The pipe diameter is constant, so the two section velocities are equal.",
+      "Friction and other head losses are negligible.",
+      "Both pressures use the same gauge reference."
+    ],
+    "notes": "Tests whether the evaluator applies the elevation term in Bernoulli's equation instead of inferring equal pressure from equal velocity."
+  },
+  {
+    "id": "FM-005",
+    "domain": "Fluid Mechanics",
+    "difficulty": "Easy",
+    "question": "A uniform gauge pressure of 150 kPa acts on a hydraulic piston with area 0.020 m^2. Calculate the resulting force on the piston.",
+    "reference_solution": "Force is F = P*A. Converting pressure gives P = 150000 Pa, so F = 150000*0.020 = 3000 N.",
+    "candidate_solution": "Using F = P*A, convert 150 kPa to 150000 Pa and calculate F = 150000*0.020 = 3000. Therefore, the resulting force is 3000 Pa.",
+    "candidate_is_correct": false,
+    "injected_error": "The calculation is numerically correct, but the candidate reports pressure units instead of force units.",
+    "expected_error_categories": [
+      "engineering_validity"
+    ],
+    "expected_numerical_answer": 3000,
+    "expected_unit": "N",
+    "important_assumptions": [
+      "The pressure is uniform over the piston face.",
+      "The requested force is the force produced by the stated gauge pressure."
+    ],
+    "notes": "Isolates a final-unit error while keeping the governing relationship, conversion, and numerical calculation correct."
+  },
+  {
+    "id": "FM-006",
+    "domain": "Fluid Mechanics",
+    "difficulty": "Medium",
+    "question": "Water flows steadily through a horizontal pipe that contracts from diameter D1 = 0.10 m to D2 = 0.05 m. At section 1, V1 = 2 m/s and P1 = 200 kPa gauge. Neglect losses and use rho = 1000 kg/m^3. Calculate the gauge pressure at section 2.",
+    "reference_solution": "Continuity gives V2 = (D1/D2)^2*V1 = (0.10/0.05)^2*2 = 8 m/s. For a horizontal lossless flow, Bernoulli gives P2 = P1 + 0.5*rho*(V1^2 - V2^2) = 200000 + 0.5*1000*(4 - 64) = 170000 Pa = 170 kPa gauge.",
+    "candidate_solution": "Continuity gives V2 = (0.10/0.05)^2*2 = 8 m/s. Applying Bernoulli between the horizontal sections, P2 = 200000 + 0.5*1000*(2^2 - 8^2) = 170000 Pa. Therefore, P2 = 170 kPa gauge.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": 170,
+    "expected_unit": "kPa",
+    "important_assumptions": [
+      "The flow is steady and incompressible.",
+      "Both pipe sections are circular.",
+      "The sections are at the same elevation.",
+      "Friction and other head losses are negligible."
+    ],
+    "notes": "Correct multi-step control case combining continuity and Bernoulli's equation."
+  },
+  {
     "id": "AE-001",
     "domain": "Aerodynamics",
     "difficulty": "Easy",
@@ -78,6 +162,82 @@
     "notes": "Conceptual case testing whether the evaluator identifies the stall misconception without inventing a mathematical-execution error."
   },
   {
+    "id": "AE-003",
+    "domain": "Aerodynamics",
+    "difficulty": "Easy",
+    "question": "An aerodynamic body has air density rho = 1.2 kg/m^3, speed V = 30 m/s, drag coefficient CD = 0.40, and reference area S = 2.0 m^2. Calculate the drag force.",
+    "reference_solution": "Drag is D = 0.5*rho*V^2*S*CD. Substitution gives D = 0.5*1.2*30^2*2.0*0.40 = 432 N.",
+    "candidate_solution": "Using D = 0.5*rho*V^2*S*CD, D = 0.5*1.2*30^2*2.0*0.40 = 468 N. Therefore, the drag force is 468 N.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate selects and substitutes into the correct drag equation but evaluates the arithmetic incorrectly.",
+    "expected_error_categories": [
+      "mathematical_execution"
+    ],
+    "expected_numerical_answer": 432,
+    "expected_unit": "N",
+    "important_assumptions": [
+      "The supplied drag coefficient applies at the stated condition.",
+      "The reference area is the area associated with the supplied drag coefficient."
+    ],
+    "notes": "Isolates arithmetic execution from selection of the aerodynamic-force equation."
+  },
+  {
+    "id": "AE-004",
+    "domain": "Aerodynamics",
+    "difficulty": "Easy",
+    "question": "An aircraft weighs 12000 N and is in steady, level, unaccelerated flight. What lift force is required?",
+    "reference_solution": "Steady, level, unaccelerated flight requires vertical force equilibrium, so lift equals weight. Therefore, L = 12000 N.",
+    "candidate_solution": "Even in steady level flight, the aircraft must keep gaining altitude, so lift should exceed weight. Adding a 20% climbing margin gives L = 1.2*12000 = 14400 N.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate misinterprets steady level flight as a climbing condition and adds an unsupported lift margin.",
+    "expected_error_categories": [
+      "problem_understanding"
+    ],
+    "expected_numerical_answer": 12000,
+    "expected_unit": "N",
+    "important_assumptions": [
+      "The aircraft is in steady, level, unaccelerated flight.",
+      "Vertical aerodynamic and weight forces are the forces relevant to the requested equilibrium."
+    ],
+    "notes": "Tests whether the evaluator respects the stated flight condition instead of introducing an unrequested climb."
+  },
+  {
+    "id": "AE-005",
+    "domain": "Aerodynamics",
+    "difficulty": "Medium",
+    "question": "A wing flies at air density rho = 1.225 kg/m^3 and speed V = 40 m/s. Its reference area is S = 12 m^2 and lift coefficient is CL = 0.75. Calculate the lift using dynamic pressure as an intermediate step.",
+    "reference_solution": "Dynamic pressure is q = 0.5*rho*V^2 = 0.5*1.225*40^2 = 980 Pa. Lift is L = q*S*CL = 980*12*0.75 = 8820 N.",
+    "candidate_solution": "First calculate q = 0.5*1.225*40^2 = 980 Pa. Then L = q*S*CL = 980*12*0.75 = 8820 N. Therefore, the lift is 8820 N.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": 8820,
+    "expected_unit": "N",
+    "important_assumptions": [
+      "The supplied lift coefficient applies at the stated flight condition.",
+      "The supplied area is the reference area associated with the lift coefficient."
+    ],
+    "notes": "Correct multi-step control case using dynamic pressure and the lift coefficient."
+  },
+  {
+    "id": "AE-006",
+    "domain": "Aerodynamics",
+    "difficulty": "Medium",
+    "question": "At a fixed air density, speed, and wing reference area, explain whether increasing lift coefficient alone means the wing can produce lift without dynamic pressure.",
+    "reference_solution": "No. Lift is L = q*S*CL, where q is dynamic pressure. Increasing CL increases lift when q and S are fixed, but a nonzero lift coefficient does not remove the dependence on dynamic pressure. If q is zero, this model gives zero lift regardless of CL.",
+    "candidate_solution": "Increasing CL raises lift when density, speed, and area are fixed, but lift still follows L = q*S*CL. A lift coefficient does not create lift independently of dynamic pressure; if q is zero, the equation gives zero lift.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The standard lift relation L = q*S*CL is applicable.",
+      "Air density, speed, and reference area are held fixed for the stated comparison."
+    ],
+    "notes": "Correct conceptual control case testing interpretation of an aerodynamic coefficient without treating it as an independent force source."
+  },
+  {
     "id": "TH-001",
     "domain": "Thermodynamics",
     "difficulty": "Easy",
@@ -116,6 +276,88 @@
     "notes": "Correct conceptual control case testing whether the evaluator respects an explicitly stated sign convention without inventing errors."
   },
   {
+    "id": "TH-003",
+    "domain": "Thermodynamics",
+    "difficulty": "Easy",
+    "question": "A closed system receives 80 kJ of heat and does 30 kJ of work on its surroundings. Using heat into the system as positive and work done by the system as positive, calculate the change in internal energy. Neglect kinetic and potential energy changes.",
+    "reference_solution": "With the stated sign convention, the first law is Delta U = Q - W. Therefore, Delta U = 80 - 30 = 50 kJ.",
+    "candidate_solution": "Heat input and work output are both positive quantities, so Delta U = Q + W = 80 + 30 = 110 kJ. The internal energy increases by 110 kJ.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate violates the stated work sign convention by adding work done by the system instead of subtracting it.",
+    "expected_error_categories": [
+      "engineering_validity"
+    ],
+    "expected_numerical_answer": 50,
+    "expected_unit": "kJ",
+    "important_assumptions": [
+      "The system is closed.",
+      "Heat into the system is positive and work done by the system is positive.",
+      "Changes in kinetic and potential energy are negligible."
+    ],
+    "notes": "Isolates a sign-convention violation while keeping the arithmetic internally consistent."
+  },
+  {
+    "id": "TH-004",
+    "domain": "Thermodynamics",
+    "difficulty": "Easy",
+    "question": "A cyclic heat engine receives 500 kJ of heat and produces 150 kJ of net work per cycle. Calculate its thermal efficiency.",
+    "reference_solution": "Thermal efficiency is eta = Wnet,out/Qin = 150/500 = 0.30, or 30%. The rejected heat is 350 kJ, but it is not the numerator in the efficiency definition.",
+    "candidate_solution": "The rejected heat is Qout = 500 - 150 = 350 kJ. Thermal efficiency is eta = Qout/Qin = 350/500 = 0.70, so the efficiency is 70%.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate uses rejected heat divided by heat input instead of net work output divided by heat input as the thermal-efficiency definition.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": 30,
+    "expected_unit": "%",
+    "important_assumptions": [
+      "The device operates in a cycle.",
+      "The stated 150 kJ is the net work output per cycle."
+    ],
+    "notes": "Tests selection of the correct heat-engine efficiency definition; the candidate's arithmetic is correct for its wrong ratio."
+  },
+  {
+    "id": "TH-005",
+    "domain": "Thermodynamics",
+    "difficulty": "Medium",
+    "question": "A gas in a rigid, sealed tank is heated and its pressure rises. Does the pressure rise imply positive moving-boundary work? Explain.",
+    "reference_solution": "No. A rigid tank has constant volume, so moving-boundary work Wb = integral(P dV) is zero because dV = 0. The pressure can rise as internal energy and temperature increase without boundary displacement.",
+    "candidate_solution": "Yes. Because the pressure rises during heating, the gas pushes harder on the tank wall and therefore performs positive moving-boundary work even though the tank volume is fixed.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate ignores the rigid constant-volume constraint and interprets a pressure rise as boundary work without boundary displacement.",
+    "expected_error_categories": [
+      "engineering_validity"
+    ],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The tank is rigid, so its volume is constant.",
+      "The tank is sealed, so no mass crosses the boundary.",
+      "The question concerns moving-boundary work rather than other work modes."
+    ],
+    "notes": "Conceptual applicability case testing whether the evaluator enforces the physical constant-volume constraint."
+  },
+  {
+    "id": "TH-006",
+    "domain": "Thermodynamics",
+    "difficulty": "Medium",
+    "question": "Two kilograms of an ideal gas in a rigid closed tank are initially at 300 K. The gas receives 287.2 kJ of heat. Use constant cv = 0.718 kJ/(kg*K), neglect other energy changes, and calculate the final temperature.",
+    "reference_solution": "A rigid tank has zero boundary work, so Q = Delta U = m*cv*(T2 - T1). Thus T2 - T1 = 287.2/(2*0.718) = 200 K, giving T2 = 500 K.",
+    "candidate_solution": "For the rigid tank, W = 0 and Q = m*cv*(T2 - T1). Therefore, T2 - 300 = 287.2/(2*0.718) = 200 K, so T2 = 500 K.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": 500,
+    "expected_unit": "K",
+    "important_assumptions": [
+      "The tank is rigid and closed.",
+      "The gas behaves ideally and cv is constant over the temperature range.",
+      "Changes in kinetic and potential energy are negligible.",
+      "No work mode other than moving-boundary work is present."
+    ],
+    "notes": "Correct multi-step control case applying the first law and an ideal-gas internal-energy relation."
+  },
+  {
     "id": "EM-001",
     "domain": "Engineering Mathematics",
     "difficulty": "Easy",
@@ -150,6 +392,84 @@
       "Standard real-variable differentiation rules apply."
     ],
     "notes": "Correct symbolic control case. No physical engineering unit should be inferred or invented."
+  },
+  {
+    "id": "EM-003",
+    "domain": "Engineering Mathematics",
+    "difficulty": "Easy",
+    "question": "A particle has velocity v(t) = 3t^2 + 2 m/s for 0 <= t <= 2 s. Calculate its displacement over this interval.",
+    "reference_solution": "Displacement is the integral of velocity: s = integral from 0 to 2 of (3t^2 + 2) dt = [t^3 + 2t] from 0 to 2 = 8 + 4 = 12 m.",
+    "candidate_solution": "Integrate the velocity to obtain s = [t^3 + 2t] from 0 to 2. Evaluating gives s = 6 + 4 = 10 m, so the displacement is 10 m.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate integrates correctly but evaluates 2^3 as 6 instead of 8.",
+    "expected_error_categories": [
+      "mathematical_execution"
+    ],
+    "expected_numerical_answer": 12,
+    "expected_unit": "m",
+    "important_assumptions": [
+      "The stated velocity function applies over the entire interval from 0 to 2 seconds.",
+      "Displacement is measured from the position at t = 0."
+    ],
+    "notes": "Integration case with one controlled arithmetic error after the correct antiderivative is obtained."
+  },
+  {
+    "id": "EM-004",
+    "domain": "Engineering Mathematics",
+    "difficulty": "Medium",
+    "question": "Solve the initial-value problem dy/dt = -2y with y(0) = 3.",
+    "reference_solution": "Separate variables: dy/y = -2 dt. Integration gives ln|y| = -2t + C, so y = C*exp(-2t). Applying y(0) = 3 gives y(t) = 3*exp(-2t).",
+    "candidate_solution": "Separate variables as dy/y = -2 dt. After integration, take y = C*exp(2t). Applying y(0) = 3 gives y(t) = 3*exp(2t).",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate loses the negative sign when converting the integrated equation into the exponential solution.",
+    "expected_error_categories": [
+      "mathematical_execution"
+    ],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The differential equation applies for the interval of interest.",
+      "The standard real exponential solution is intended."
+    ],
+    "notes": "Symbolic first-order differential-equation case testing preservation of the decay sign."
+  },
+  {
+    "id": "EM-005",
+    "domain": "Engineering Mathematics",
+    "difficulty": "Easy",
+    "question": "Solve the algebraic equation 4x - 7 = 13 and clearly state the final value of x.",
+    "reference_solution": "Add 7 to both sides to obtain 4x = 20, then divide by 4 to obtain x = 5.",
+    "candidate_solution": "Adding 7 to both sides gives 4x = 20. Dividing by 4 gives x = 5. Therefore, the final answer is x = 4.",
+    "candidate_is_correct": false,
+    "injected_error": "The algebraic work obtains x = 5 correctly, but the final response contradicts that work and states x = 4.",
+    "expected_error_categories": [
+      "final_response_quality"
+    ],
+    "expected_numerical_answer": 5,
+    "expected_unit": null,
+    "important_assumptions": [
+      "x is a real scalar.",
+      "The final stated value is expected to agree with the preceding algebra."
+    ],
+    "notes": "Tests whether the evaluator catches a contradictory final answer when the underlying calculation is correct."
+  },
+  {
+    "id": "EM-006",
+    "domain": "Engineering Mathematics",
+    "difficulty": "Medium",
+    "question": "A cooling model is dT/dt = -0.1*(T - 20), with T(0) = 80 degrees C and t in minutes. Calculate T at t = 10 min. Use exp(-1) = 0.3679.",
+    "reference_solution": "The solution is T(t) = 20 + (80 - 20)*exp(-0.1t). At t = 10 min, T = 20 + 60*exp(-1) = 20 + 60*0.3679 = 42.074 degrees C, or 42.07 degrees C.",
+    "candidate_solution": "Using T(t) = 20 + (80 - 20)*exp(-0.1t), T(10) = 20 + 60*exp(-1) = 20 + 60*0.3679 = 42.074 degrees C. Therefore, T(10) is approximately 42.07 degrees C.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": 42.07,
+    "expected_unit": "degrees C",
+    "important_assumptions": [
+      "The stated first-order cooling model and constant ambient temperature of 20 degrees C apply over the interval.",
+      "Time is measured in minutes consistently with the coefficient 0.1."
+    ],
+    "notes": "Correct numerical control case for a first-order differential-equation model."
   },
   {
     "id": "PR-001",
@@ -188,5 +508,84 @@
       "Pe and Pa denote nozzle exit and ambient static pressure, respectively."
     ],
     "notes": "Correct conceptual control case testing whether the evaluator avoids false-positive errors."
+  },
+  {
+    "id": "PR-003",
+    "domain": "Basic Propulsion",
+    "difficulty": "Easy",
+    "question": "A rocket engine produces 20000 N of thrust with propellant mass flow rate mdot = 8 kg/s. Using g0 = 9.81 m/s^2, calculate the specific impulse.",
+    "reference_solution": "Specific impulse is Isp = F/(mdot*g0) = 20000/(8*9.81) = 254.84 s approximately.",
+    "candidate_solution": "Specific impulse is Isp = F*g0/mdot. Therefore, Isp = 20000*9.81/8 = 24525 s.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate multiplies thrust by g0 instead of dividing thrust by mdot*g0 in the specific-impulse definition.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": 254.84,
+    "expected_unit": "s",
+    "important_assumptions": [
+      "The stated thrust and mass flow rate describe the same steady operating condition.",
+      "Specific impulse is defined using the supplied standard gravitational acceleration."
+    ],
+    "notes": "Tests the governing definition of specific impulse with internally consistent arithmetic based on the wrong formula."
+  },
+  {
+    "id": "PR-004",
+    "domain": "Basic Propulsion",
+    "difficulty": "Easy",
+    "question": "Use F = mdot*Ve + (Pe - Pa)*Ae to calculate rocket thrust for mdot = 5 kg/s, Ve = 1800 m/s, Pe = 120 kPa, Pa = 100 kPa, and Ae = 0.10 m^2.",
+    "reference_solution": "Momentum thrust is 5*1800 = 9000 N. Pressure thrust is (120000 - 100000)*0.10 = 2000 N. Therefore, total thrust is F = 9000 + 2000 = 11000 N.",
+    "candidate_solution": "Momentum thrust is 5*1800 = 9000 N, and pressure thrust is (120000 - 100000)*0.10 = 2000 N. Adding the two contributions gives F = 10000 N.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate calculates both thrust contributions correctly but adds 9000 N and 2000 N incorrectly.",
+    "expected_error_categories": [
+      "mathematical_execution"
+    ],
+    "expected_numerical_answer": 11000,
+    "expected_unit": "N",
+    "important_assumptions": [
+      "The simplified one-dimensional thrust equation applies.",
+      "The mass flow, exit velocity, pressures, and exit area describe the same operating condition.",
+      "Pressures are converted from kPa to Pa before calculating pressure thrust."
+    ],
+    "notes": "Isolates an addition error after both momentum and pressure thrust terms are calculated correctly."
+  },
+  {
+    "id": "PR-005",
+    "domain": "Basic Propulsion",
+    "difficulty": "Medium",
+    "question": "For the pressure-thrust term (Pe - Pa)*Ae, what is its sign when a nozzle is overexpanded so that exit pressure Pe is less than ambient pressure Pa? Explain the physical implication.",
+    "reference_solution": "When Pe < Pa, the difference Pe - Pa is negative, so the pressure-thrust term is negative. Under the stated one-dimensional convention, this term reduces the net thrust relative to the momentum-thrust contribution alone.",
+    "candidate_solution": "The pressure-thrust term is positive whenever Pe and Pa are different because any pressure difference adds thrust. Therefore, an overexpanded nozzle gains positive pressure thrust even when Pe < Pa.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate gives the pressure-thrust term the wrong sign and misinterprets the effect of an overexpanded nozzle.",
+    "expected_error_categories": [
+      "engineering_validity"
+    ],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The supplied pressure-thrust expression and its axial sign convention apply.",
+      "The nozzle exit area is positive."
+    ],
+    "notes": "Conceptual sign and physical-interpretation case for nozzle pressure thrust."
+  },
+  {
+    "id": "PR-006",
+    "domain": "Basic Propulsion",
+    "difficulty": "Medium",
+    "question": "A rocket engine produces 15.0 kN of thrust at a specific impulse of 250 s. Using g0 = 9.81 m/s^2 and F = mdot*g0*Isp, calculate the propellant mass flow rate.",
+    "reference_solution": "Convert thrust to 15000 N and rearrange: mdot = F/(g0*Isp) = 15000/(9.81*250) = 6.116 kg/s, or 6.12 kg/s.",
+    "candidate_solution": "Using mdot = F/(g0*Isp), mdot = 15000/(9.81*250) = 6.116 kg/s. Therefore, the required propellant mass flow rate is approximately 6.12 kg/s.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": 6.12,
+    "expected_unit": "kg/s",
+    "important_assumptions": [
+      "The thrust and specific impulse describe the same steady operating condition.",
+      "The supplied standard gravitational acceleration is used in the specific-impulse definition."
+    ],
+    "notes": "Correct numerical control case relating thrust, specific impulse, and propellant mass flow."
   }
 ]

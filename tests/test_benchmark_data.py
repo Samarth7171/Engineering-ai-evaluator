@@ -48,6 +48,12 @@ ALLOWED_ERROR_CATEGORIES = {
     "final_response_quality",
 }
 
+EXPECTED_IDS = {
+    f"{prefix}-{number:03d}"
+    for prefix in ("FM", "AE", "TH", "EM", "PR")
+    for number in range(1, 7)
+}
+
 
 @pytest.fixture(scope="module")
 def benchmark_cases():
@@ -59,8 +65,8 @@ def test_benchmark_json_loads_as_a_list(benchmark_cases):
     assert isinstance(benchmark_cases, list)
 
 
-def test_benchmark_contains_exactly_ten_cases(benchmark_cases):
-    assert len(benchmark_cases) == 10
+def test_benchmark_v2_contains_exactly_thirty_cases(benchmark_cases):
+    assert len(benchmark_cases) == 30
 
 
 def test_every_case_contains_required_fields(benchmark_cases):
@@ -74,17 +80,23 @@ def test_case_ids_are_unique(benchmark_cases):
     assert len(ids) == len(set(ids))
 
 
+def test_benchmark_v2_contains_expected_ids(benchmark_cases):
+    ids = {case["id"] for case in benchmark_cases}
+
+    assert ids == EXPECTED_IDS
+
+
 def test_only_allowed_domains_are_used(benchmark_cases):
     domains = {case["domain"] for case in benchmark_cases}
 
     assert domains <= ALLOWED_DOMAINS
 
 
-def test_each_domain_has_exactly_two_cases(benchmark_cases):
+def test_each_domain_has_exactly_six_cases(benchmark_cases):
     domain_counts = Counter(case["domain"] for case in benchmark_cases)
 
     assert set(domain_counts) == ALLOWED_DOMAINS
-    assert all(count == 2 for count in domain_counts.values())
+    assert all(count == 6 for count in domain_counts.values())
 
 
 def test_only_allowed_difficulties_are_used(benchmark_cases):
@@ -119,7 +131,8 @@ def test_incorrect_candidates_have_expected_errors(benchmark_cases):
     ]
 
     for case in incorrect_cases:
-        assert case["injected_error"] is not None
+        assert isinstance(case["injected_error"], str)
+        assert case["injected_error"].strip()
         assert case["expected_error_categories"]
 
 
@@ -135,12 +148,12 @@ def test_reference_value_and_unit_may_be_null(benchmark_cases):
         assert expected_unit is None or isinstance(expected_unit, str)
 
 
-def test_benchmark_v1_candidate_composition(benchmark_cases):
+def test_benchmark_v2_candidate_composition(benchmark_cases):
     correct_count = sum(
         case["candidate_is_correct"] for case in benchmark_cases
     )
     incorrect_count = len(benchmark_cases) - correct_count
 
-    assert len(benchmark_cases) == 10
-    assert correct_count == 4
-    assert incorrect_count == 6
+    assert len(benchmark_cases) == 30
+    assert correct_count == 10
+    assert incorrect_count == 20

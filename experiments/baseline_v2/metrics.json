@@ -1,0 +1,416 @@
+{
+  "benchmark_case_count": 30,
+  "completion": {
+    "total_cases": 30,
+    "completed_cases": 24,
+    "failed_cases": 6,
+    "evaluation_completion_rate": 0.8
+  },
+  "error_detection": {
+    "completed_intentionally_incorrect_cases": 17,
+    "cases_with_detected_errors": 16,
+    "cases_without_detected_errors": 1,
+    "error_detection_rate": 0.9411764705882353
+  },
+  "root_category_agreement": {
+    "completed_intentionally_incorrect_cases": 17,
+    "agreement_passes": 13,
+    "agreement_failures": 4,
+    "root_category_agreement_rate": 0.7647058823529411
+  },
+  "false_positive_behavior": {
+    "completed_intentionally_correct_cases": 7,
+    "false_positive_cases": 0,
+    "clean_correct_cases": 7,
+    "false_positive_rate": 0.0,
+    "correct_case_clean_rate": 1.0
+  },
+  "reference_numerical_comparison": {
+    "performed_comparisons": 17,
+    "matches": 5,
+    "mismatches": 12,
+    "not_performed": 0
+  },
+  "reference_unit_comparison": {
+    "performed_comparisons": 16,
+    "matches": 13,
+    "mismatches": 3,
+    "not_performed": 0
+  },
+  "failures": [
+    {
+      "id": "FM-002",
+      "domain": "Fluid Mechanics",
+      "failure_type": "EvaluationResponseError",
+      "failure_message": "The evaluation service returned an invalid structured response. Please retry."
+    },
+    {
+      "id": "TH-001",
+      "domain": "Thermodynamics",
+      "failure_type": "EvaluationResponseError",
+      "failure_message": "The evaluation service returned an invalid structured response. Please retry."
+    },
+    {
+      "id": "TH-005",
+      "domain": "Thermodynamics",
+      "failure_type": "EvaluationResponseError",
+      "failure_message": "The evaluation service returned an invalid structured response. Please retry."
+    },
+    {
+      "id": "EM-004",
+      "domain": "Engineering Mathematics",
+      "failure_type": "EvaluationResponseError",
+      "failure_message": "The evaluation service returned an invalid structured response. Please retry."
+    },
+    {
+      "id": "PR-002",
+      "domain": "Basic Propulsion",
+      "failure_type": "EvaluationResponseError",
+      "failure_message": "The evaluation service returned an invalid structured response. Please retry."
+    },
+    {
+      "id": "PR-006",
+      "domain": "Basic Propulsion",
+      "failure_type": "EvaluationRequestError",
+      "failure_message": "The evaluation service request failed. Please retry."
+    }
+  ],
+  "case_diagnostics": [
+    {
+      "id": "FM-001",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method"
+      ]
+    },
+    {
+      "id": "FM-002",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": true,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "FM-003",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method"
+      ]
+    },
+    {
+      "id": "FM-004",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method",
+        "engineering_validity"
+      ]
+    },
+    {
+      "id": "FM-005",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_validity"
+      ]
+    },
+    {
+      "id": "FM-006",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "AE-001",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method"
+      ]
+    },
+    {
+      "id": "AE-002",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": [
+        "problem_understanding"
+      ]
+    },
+    {
+      "id": "AE-003",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "mathematical_execution"
+      ]
+    },
+    {
+      "id": "AE-004",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "problem_understanding"
+      ]
+    },
+    {
+      "id": "AE-005",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "AE-006",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "TH-001",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "TH-002",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "TH-003",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method"
+      ]
+    },
+    {
+      "id": "TH-004",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method"
+      ]
+    },
+    {
+      "id": "TH-005",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "TH-006",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "EM-001",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "mathematical_execution"
+      ]
+    },
+    {
+      "id": "EM-002",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "EM-003",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "mathematical_execution"
+      ]
+    },
+    {
+      "id": "EM-004",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "EM-005",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "final_response_quality"
+      ]
+    },
+    {
+      "id": "EM-006",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "PR-001",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_validity",
+        "problem_understanding"
+      ]
+    },
+    {
+      "id": "PR-002",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": true,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "PR-003",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method",
+        "engineering_validity"
+      ]
+    },
+    {
+      "id": "PR-004",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "PR-005",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_validity",
+        "problem_understanding"
+      ]
+    },
+    {
+      "id": "PR-006",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": true,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    }
+  ]
+}
