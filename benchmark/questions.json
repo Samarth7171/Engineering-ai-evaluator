@@ -1,20 +1,192 @@
 [
   {
-    "id": "fluid_001",
+    "id": "FM-001",
     "domain": "Fluid Mechanics",
     "difficulty": "Easy",
     "question": "Air has a density of 1.225 kg/m^3 and flows at 50 m/s. Calculate the dynamic pressure.",
-    "reference_solution": "Dynamic pressure is calculated using q = 0.5 * rho * V^2. Substituting rho = 1.225 kg/m^3 and V = 50 m/s gives q = 1531.25 Pa.",
-    "expected_answer": 1531.25,
+    "reference_solution": "Dynamic pressure is q = 0.5 * rho * V^2. Substituting rho = 1.225 kg/m^3 and V = 50 m/s gives q = 0.5 * 1.225 * 50^2 = 1531.25 Pa.",
+    "candidate_solution": "Dynamic pressure is calculated from q = rho * V^2. Therefore, q = 1.225 * 50^2 = 3062.5 Pa. The dynamic pressure is 3062.5 Pa.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate omits the 0.5 factor from the governing dynamic-pressure equation.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": 1531.25,
     "expected_unit": "Pa",
     "important_assumptions": [
-      "Density is constant.",
-      "The given velocity represents the flow velocity."
+      "The stated density represents the air density at the condition being evaluated.",
+      "The stated velocity is the flow speed used in the dynamic-pressure relationship."
     ],
-    "common_mistakes": [
-      "Using q = rho * V^2 and forgetting the 0.5 factor.",
-      "Incorrectly squaring the velocity.",
-      "Reporting incorrect units."
-    ]
+    "notes": "Tests whether the evaluator distinguishes a governing-equation error from an arithmetic error. The arithmetic based on the candidate's incorrect equation is internally correct."
+  },
+  {
+    "id": "FM-002",
+    "domain": "Fluid Mechanics",
+    "difficulty": "Easy",
+    "question": "Air has a density of 1.225 kg/m^3 and flows at 50 m/s. Calculate the dynamic pressure.",
+    "reference_solution": "Dynamic pressure is q = 0.5 * rho * V^2. Substituting rho = 1.225 kg/m^3 and V = 50 m/s gives q = 0.5 * 1.225 * 50^2 = 1531.25 Pa.",
+    "candidate_solution": "Using q = 0.5 * rho * V^2, q = 0.5 * 1.225 * 50^2 = 1531.25 Pa. Therefore, the dynamic pressure is 1531.25 Pa.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": 1531.25,
+    "expected_unit": "Pa",
+    "important_assumptions": [
+      "The stated density represents the air density at the condition being evaluated.",
+      "The stated velocity is the flow speed used in the dynamic-pressure relationship."
+    ],
+    "notes": "False-positive control case. A correct solution should not be assigned invented errors."
+  },
+  {
+    "id": "AE-001",
+    "domain": "Aerodynamics",
+    "difficulty": "Easy",
+    "question": "An aircraft wing has air density rho = 1.225 kg/m^3, speed V = 40 m/s, wing area S = 10 m^2, and lift coefficient CL = 0.8. Calculate the lift.",
+    "reference_solution": "Lift is L = 0.5 * rho * V^2 * S * CL. Substitution gives L = 0.5 * 1.225 * 40^2 * 10 * 0.8 = 7840 N.",
+    "candidate_solution": "Lift is L = rho * V^2 * S * CL. Substituting the values gives L = 1.225 * 40^2 * 10 * 0.8 = 15680 N. Therefore, the lift is 15680 N.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate omits the 0.5 factor from the lift equation.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": 7840,
+    "expected_unit": "N",
+    "important_assumptions": [
+      "The supplied lift coefficient applies at the stated flight condition.",
+      "Air density, speed, and reference area are consistent with the standard lift equation."
+    ],
+    "notes": "Tests recognition of a governing-formula error while keeping arithmetic based on the incorrect formula internally correct."
+  },
+  {
+    "id": "AE-002",
+    "domain": "Aerodynamics",
+    "difficulty": "Medium",
+    "question": "What generally happens when the angle of attack of a conventional wing is increased beyond its stall angle?",
+    "reference_solution": "Beyond the stall angle, large-scale flow separation generally develops over the wing. Lift decreases from its peak value while drag increases substantially.",
+    "candidate_solution": "Lift continues increasing indefinitely as the angle of attack increases because a larger angle of attack always produces more lift. The wing therefore keeps gaining lift beyond the stall angle.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate incorrectly assumes lift continues increasing beyond stall and ignores flow separation and increased drag.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The question concerns the general behavior of a conventional wing.",
+      "The comparison is made after the wing has exceeded its stall angle."
+    ],
+    "notes": "Conceptual case testing whether the evaluator identifies the stall misconception without inventing a mathematical-execution error."
+  },
+  {
+    "id": "TH-001",
+    "domain": "Thermodynamics",
+    "difficulty": "Easy",
+    "question": "An ideal gas has pressure P = 200000 Pa, density rho = 2 kg/m^3, and specific gas constant R = 287 J/(kg*K). Calculate its temperature.",
+    "reference_solution": "For an ideal gas, P = rho * R * T, so T = P / (rho * R) = 200000 / (2 * 287) = 348.43 K approximately.",
+    "candidate_solution": "Using P = rho * R * T, rearrange to T = P / (rho * R). Substituting gives T = 200000 / (2 * 287) = 358.43 K. Therefore, the gas temperature is 358.43 K.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate makes an arithmetic error in the final division after choosing, rearranging, and substituting into the correct equation.",
+    "expected_error_categories": [
+      "mathematical_execution"
+    ],
+    "expected_numerical_answer": 348.43,
+    "expected_unit": "K",
+    "important_assumptions": [
+      "The gas behaves ideally at the stated condition.",
+      "The supplied specific gas constant corresponds to the gas being evaluated."
+    ],
+    "notes": "Isolates an arithmetic error; the governing equation, rearrangement, substitution, and unit are otherwise correct."
+  },
+  {
+    "id": "TH-002",
+    "domain": "Thermodynamics",
+    "difficulty": "Medium",
+    "question": "Give a concise explanation of the first law of thermodynamics for a closed system, including a clear sign convention for heat and work.",
+    "reference_solution": "The first law expresses conservation of energy. For a closed system, using heat into the system as positive and work done by the system as positive, Delta E = Q - W. If kinetic and potential energy changes are negligible, this becomes Delta U = Q - W.",
+    "candidate_solution": "The first law is conservation of energy. For a closed system, if heat transferred into the system is positive and work done by the system is positive, the change in total system energy is Delta E = Q - W. When kinetic and potential energy changes are negligible, Delta U = Q - W.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The system is closed, so mass does not cross its boundary.",
+      "The stated equation uses heat into the system and work done by the system as positive."
+    ],
+    "notes": "Correct conceptual control case testing whether the evaluator respects an explicitly stated sign convention without inventing errors."
+  },
+  {
+    "id": "EM-001",
+    "domain": "Engineering Mathematics",
+    "difficulty": "Easy",
+    "question": "Find the derivative of f(x) = 3x^2 + 2x + 5.",
+    "reference_solution": "Differentiate term by term: d(3x^2)/dx = 6x, d(2x)/dx = 2, and d(5)/dx = 0. Therefore, f'(x) = 6x + 2.",
+    "candidate_solution": "Differentiating term by term gives d(3x^2)/dx = 6x, d(2x)/dx = 0, and d(5)/dx = 5. Therefore, f'(x) = 6x + 5.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate differentiates the linear and constant terms incorrectly and reports f'(x) = 6x + 5 instead of 6x + 2.",
+    "expected_error_categories": [
+      "mathematical_execution"
+    ],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "Standard real-variable differentiation rules apply."
+    ],
+    "notes": "Symbolic, non-numerical case testing detection of a differentiation error without inventing a physical unit."
+  },
+  {
+    "id": "EM-002",
+    "domain": "Engineering Mathematics",
+    "difficulty": "Easy",
+    "question": "Find the derivative of f(x) = 3x^2 + 2x + 5.",
+    "reference_solution": "Differentiate term by term: d(3x^2)/dx = 6x, d(2x)/dx = 2, and d(5)/dx = 0. Therefore, f'(x) = 6x + 2.",
+    "candidate_solution": "Applying the power rule term by term, d(3x^2)/dx = 6x, d(2x)/dx = 2, and the derivative of 5 is 0. Therefore, f'(x) = 6x + 2.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "Standard real-variable differentiation rules apply."
+    ],
+    "notes": "Correct symbolic control case. No physical engineering unit should be inferred or invented."
+  },
+  {
+    "id": "PR-001",
+    "domain": "Basic Propulsion",
+    "difficulty": "Medium",
+    "question": "Using the simplified rocket thrust equation F = mdot * Ve + (Pe - Pa) * Ae, explain the terms that contribute to rocket thrust.",
+    "reference_solution": "The term mdot * Ve is the momentum-thrust contribution from the exhaust mass flow. The term (Pe - Pa) * Ae is the pressure-thrust contribution caused by the nozzle exit pressure differing from ambient pressure. The pressure-thrust term is zero when Pe = Pa.",
+    "candidate_solution": "Rocket thrust is always only F = mdot * Ve because thrust comes solely from exhaust momentum. Nozzle exit pressure never contributes to thrust, so the term involving Pe, Pa, and Ae can always be ignored.",
+    "candidate_is_correct": false,
+    "injected_error": "The candidate incorrectly claims pressure thrust never contributes and discards the (Pe - Pa) * Ae term under all conditions.",
+    "expected_error_categories": [
+      "engineering_method"
+    ],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The supplied simplified thrust equation applies to the operating condition being discussed.",
+      "Pe and Pa denote nozzle exit and ambient static pressure, respectively."
+    ],
+    "notes": "Conceptual case testing whether the evaluator recognizes both momentum thrust and pressure thrust without inventing calculations."
+  },
+  {
+    "id": "PR-002",
+    "domain": "Basic Propulsion",
+    "difficulty": "Medium",
+    "question": "What do the two terms in the simplified rocket thrust equation F = mdot * Ve + (Pe - Pa) * Ae represent physically?",
+    "reference_solution": "The term mdot * Ve represents momentum thrust from the exhaust mass flow and exit velocity. The term (Pe - Pa) * Ae represents pressure thrust due to the difference between nozzle exit pressure and ambient pressure acting over the exit area.",
+    "candidate_solution": "The mdot * Ve term is momentum thrust produced by accelerating the exhaust mass flow. The (Pe - Pa) * Ae term is pressure thrust caused by the nozzle exit pressure differing from ambient pressure over the nozzle exit area. If Pe equals Pa, the pressure-thrust contribution is zero.",
+    "candidate_is_correct": true,
+    "injected_error": null,
+    "expected_error_categories": [],
+    "expected_numerical_answer": null,
+    "expected_unit": null,
+    "important_assumptions": [
+      "The supplied simplified thrust equation applies to the operating condition being discussed.",
+      "Pe and Pa denote nozzle exit and ambient static pressure, respectively."
+    ],
+    "notes": "Correct conceptual control case testing whether the evaluator avoids false-positive errors."
   }
 ]
