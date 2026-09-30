@@ -1,0 +1,328 @@
+{
+  "run_metadata": {
+    "runner": "Engineering AI Evaluator Benchmark v1",
+    "started_at_utc": "2026-09-30T08:14:32.370291+00:00",
+    "completed_at_utc": "2026-09-30T08:27:20.229616+00:00",
+    "benchmark_case_count": 10
+  },
+  "case_results": [
+    {
+      "id": "FM-001",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_method"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 3062.5,
+      "extracted_unit": "Pa",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 1531.25,
+        "candidate": 3062.5,
+        "absolute_error": 1531.25,
+        "percentage_error": 100.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "Pa",
+        "candidate_unit": "Pa",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate's solution contains a fundamental error in the formula for dynamic pressure, leading to an incorrect result. The arithmetic was correct, but the engineering method was flawed.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_method",
+          "description": "The candidate used the formula q = ρ * V^2 for dynamic pressure, but the correct formula is q = (1/2) * ρ * V^2.",
+          "why_it_matters": "This is a fundamental error in fluid mechanics. Dynamic pressure represents the kinetic energy per unit volume, and the factor of 1/2 is derived from Bernoulli's equation. Using the incorrect formula leads to a result that is twice the correct value, rendering the solution invalid."
+        }
+      ]
+    },
+    {
+      "id": "FM-002",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": 1531.25,
+      "extracted_unit": "Pa",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 1531.25,
+        "candidate": 1531.25,
+        "absolute_error": 0.0,
+        "percentage_error": 0.0,
+        "tolerance": 2,
+        "within_tolerance": true
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "Pa",
+        "candidate_unit": "Pa",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is completely correct. The formula is appropriate, the calculation is accurate, the units are correct, and the final answer is clearly stated.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "AE-001",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [],
+      "missing_required_categories": [
+        "engineering_method"
+      ],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 15680,
+      "extracted_unit": "N",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 7840,
+        "candidate": 15680,
+        "absolute_error": 7840,
+        "percentage_error": 100.0,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "N",
+        "candidate_unit": "N",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate solution is correct in all aspects. No errors were found.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "AE-002",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "problem_understanding"
+      ],
+      "missing_required_categories": [
+        "engineering_method"
+      ],
+      "additional_detected_categories": [
+        "problem_understanding"
+      ],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect because it misrepresents the aerodynamic behavior beyond the stall angle. The correct understanding is that lift decreases after the stall angle due to flow separation.",
+      "evaluator_errors": [
+        {
+          "category": "problem_understanding",
+          "description": "The candidate incorrectly states that lift continues increasing indefinitely beyond the stall angle. In reality, the stall angle is the point at which the lift coefficient reaches its maximum, and beyond this angle, lift decreases due to flow separation.",
+          "why_it_matters": "This misunderstanding indicates a fundamental error in grasping the aerodynamic principle of stalling, which is critical for aircraft performance and safety."
+        }
+      ]
+    },
+    {
+      "id": "TH-001",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [
+        "mathematical_execution"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": 358.43,
+      "extracted_unit": "K",
+      "reference_numerical_comparison": {
+        "performed": true,
+        "expected": 348.43,
+        "candidate": 358.43,
+        "absolute_error": 10.0,
+        "percentage_error": 2.870016933099905,
+        "tolerance": 2,
+        "within_tolerance": false
+      },
+      "reference_unit_comparison": {
+        "performed": true,
+        "expected_unit": "K",
+        "candidate_unit": "K",
+        "units_match": true
+      },
+      "evaluator_summary": "The candidate correctly understood the problem and applied the appropriate ideal gas law formula. However, they made a simple arithmetic error during the final division, resulting in an incorrect temperature of 358.43 K instead of the correct 348.43 K. The corrected solution has been provided with the accurate calculation.",
+      "evaluator_errors": [
+        {
+          "category": "mathematical_execution",
+          "description": "The candidate performed the arithmetic division incorrectly. The calculation 200000 / (2 * 287) yields 200000 / 574 = 348.43 K, but the candidate wrote 358.43 K, which is a digit transposition error (348 vs 358).",
+          "why_it_matters": "Even though the physical formula and algebraic rearrangement are correct, the final numerical calculation is wrong, leading to an incorrect temperature value."
+        }
+      ]
+    },
+    {
+      "id": "TH-002",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": true,
+      "evaluation_status": "failed",
+      "evaluation_failure": {
+        "type": "ValueError",
+        "message": "The LLM returned an invalid structured response."
+      },
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": null,
+      "evaluator_errors": []
+    },
+    {
+      "id": "EM-001",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "mathematical_execution"
+      ],
+      "detected_error_categories": [
+        "mathematical_execution"
+      ],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": true,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect due to errors in mathematical execution. The correct derivative is f'(x) = 6x + 2.",
+      "evaluator_errors": [
+        {
+          "category": "mathematical_execution",
+          "description": "The candidate incorrectly computed the derivative of 2x as 0 instead of 2, and the derivative of 5 as 5 instead of 0.",
+          "why_it_matters": "These errors lead to an incorrect derivative, which fails to represent the true rate of change of the function. The correct derivative should be f'(x) = 6x + 2."
+        }
+      ]
+    },
+    {
+      "id": "EM-002",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is entirely correct. The derivative is accurately computed using the power rule, and the final answer is clearly presented.",
+      "evaluator_errors": []
+    },
+    {
+      "id": "PR-001",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [
+        "engineering_method"
+      ],
+      "detected_error_categories": [
+        "engineering_validity"
+      ],
+      "missing_required_categories": [
+        "engineering_method"
+      ],
+      "additional_detected_categories": [
+        "engineering_validity"
+      ],
+      "root_error_detection_pass": false,
+      "false_positive_pass": null,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is incorrect on all rubric dimensions. It incorrectly dismisses the pressure thrust term, which is an essential part of the rocket thrust equation. The corrected explanation clarifies that both momentum and pressure terms contribute to thrust.",
+      "evaluator_errors": [
+        {
+          "category": "engineering_validity",
+          "description": "The candidate incorrectly states that the pressure term (Pe - Pa) * Ae can always be ignored and that thrust comes solely from exhaust momentum. This is a fundamental error in rocket propulsion; the pressure thrust contributes significantly in many practical nozzle designs.",
+          "why_it_matters": "Ignoring the pressure term leads to an incomplete and incorrect understanding of rocket thrust, which could result in inaccurate predictions of engine performance and improper nozzle design."
+        }
+      ]
+    },
+    {
+      "id": "PR-002",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": true,
+      "evaluation_status": "completed",
+      "evaluation_failure": null,
+      "expected_error_categories": [],
+      "detected_error_categories": [],
+      "missing_required_categories": [],
+      "additional_detected_categories": [],
+      "root_error_detection_pass": null,
+      "false_positive_pass": true,
+      "extracted_numerical_value": null,
+      "extracted_unit": null,
+      "reference_numerical_comparison": null,
+      "reference_unit_comparison": null,
+      "evaluator_summary": "The candidate solution is correct. It accurately describes the physical meaning of both terms in the simplified rocket thrust equation. No errors are present.",
+      "evaluator_errors": []
+    }
+  ],
+  "aggregate_counts": {
+    "total_cases": 10,
+    "completed_evaluations": 9,
+    "api_or_evaluation_failures": 1,
+    "intentionally_incorrect_cases": 6,
+    "required_root_error_detections_passed": 3,
+    "required_root_error_detections_failed": 3,
+    "intentionally_correct_cases": 4,
+    "false_positive_tests_passed": 3,
+    "false_positive_tests_failed": 0
+  }
+}
