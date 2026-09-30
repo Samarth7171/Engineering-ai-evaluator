@@ -1,0 +1,160 @@
+{
+  "benchmark_case_count": 10,
+  "completion": {
+    "total_cases": 10,
+    "completed_cases": 9,
+    "failed_cases": 1,
+    "evaluation_completion_rate": 0.9
+  },
+  "error_detection": {
+    "completed_intentionally_incorrect_cases": 6,
+    "cases_with_detected_errors": 5,
+    "cases_without_detected_errors": 1,
+    "error_detection_rate": 0.8333333333333334
+  },
+  "root_category_agreement": {
+    "completed_intentionally_incorrect_cases": 6,
+    "agreement_passes": 3,
+    "agreement_failures": 3,
+    "root_category_agreement_rate": 0.5
+  },
+  "false_positive_behavior": {
+    "completed_intentionally_correct_cases": 3,
+    "false_positive_cases": 0,
+    "clean_correct_cases": 3,
+    "false_positive_rate": 0.0,
+    "correct_case_clean_rate": 1.0
+  },
+  "reference_numerical_comparison": {
+    "performed_comparisons": 4,
+    "matches": 1,
+    "mismatches": 3,
+    "not_performed": 0
+  },
+  "reference_unit_comparison": {
+    "performed_comparisons": 4,
+    "matches": 4,
+    "mismatches": 0,
+    "not_performed": 0
+  },
+  "failures": [
+    {
+      "id": "TH-002",
+      "domain": "Thermodynamics",
+      "failure_type": "ValueError",
+      "failure_message": "The LLM returned an invalid structured response."
+    }
+  ],
+  "case_diagnostics": [
+    {
+      "id": "FM-001",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_method"
+      ]
+    },
+    {
+      "id": "FM-002",
+      "domain": "Fluid Mechanics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "AE-001",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "AE-002",
+      "domain": "Aerodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": [
+        "problem_understanding"
+      ]
+    },
+    {
+      "id": "TH-001",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "mathematical_execution"
+      ]
+    },
+    {
+      "id": "TH-002",
+      "domain": "Thermodynamics",
+      "candidate_is_correct": true,
+      "evaluation_completed": false,
+      "error_detected": null,
+      "root_category_agreement": null,
+      "false_positive": null,
+      "detected_categories": []
+    },
+    {
+      "id": "EM-001",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": true,
+      "false_positive": null,
+      "detected_categories": [
+        "mathematical_execution"
+      ]
+    },
+    {
+      "id": "EM-002",
+      "domain": "Engineering Mathematics",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    },
+    {
+      "id": "PR-001",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": false,
+      "evaluation_completed": true,
+      "error_detected": true,
+      "root_category_agreement": false,
+      "false_positive": null,
+      "detected_categories": [
+        "engineering_validity"
+      ]
+    },
+    {
+      "id": "PR-002",
+      "domain": "Basic Propulsion",
+      "candidate_is_correct": true,
+      "evaluation_completed": true,
+      "error_detected": false,
+      "root_category_agreement": null,
+      "false_positive": false,
+      "detected_categories": []
+    }
+  ]
+}
