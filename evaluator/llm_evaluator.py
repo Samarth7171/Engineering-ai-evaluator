@@ -2,35 +2,221 @@ import os
 import json
 
 from dotenv import load_dotenv
-from openai import OpenAI
-
-
-# --------------------------------------------------
-# 1. LOAD API KEY
-# --------------------------------------------------
-
-load_dotenv()
-
-api_key = os.getenv("OPENROUTER_API_KEY")
-
-if not api_key:
-    raise ValueError("OPENROUTER_API_KEY was not found in .env")
-
-
-# --------------------------------------------------
-# 2. CONNECT TO OPENROUTER
-# --------------------------------------------------
-
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=api_key,
-    timeout=45.0,
-    max_retries=1,
+from openai import (
+    APITimeoutError,
+    AuthenticationError,
+    OpenAI,
+    OpenAIError,
 )
 
 
 # --------------------------------------------------
-# 3. ENGINEERING EVALUATION FUNCTION
+# 1. CONTROLLED EVALUATION ERRORS
+# --------------------------------------------------
+
+
+class EvaluationError(Exception):
+    """Base exception for failures the evaluator can report safely."""
+
+
+class EvaluationConfigurationError(EvaluationError):
+    """The evaluation provider is not configured or cannot authenticate."""
+
+
+class EvaluationRequestError(EvaluationError):
+    """The provider request failed or timed out."""
+
+
+class EvaluationResponseError(EvaluationError):
+    """The provider returned an invalid structured evaluation."""
+
+
+# --------------------------------------------------
+# 2. CONNECT TO OPENROUTER LAZILY
+# --------------------------------------------------
+
+
+_client = None
+
+
+def _get_client():
+    global _client
+
+    if _client is not None:
+        return _client
+
+    load_dotenv()
+
+    api_key = os.getenv("OPENROUTER_API_KEY")
+
+    if not api_key:
+        raise EvaluationConfigurationError(
+            "The evaluation service is not configured. "
+            "Please contact the application administrator."
+        )
+
+    _client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=api_key,
+        timeout=45.0,
+        max_retries=1,
+    )
+
+    return _client
+
+
+# --------------------------------------------------
+# 3. VALIDATE STRUCTURED RESPONSES
+# --------------------------------------------------
+
+
+RUBRIC_DIMENSIONS = {
+    "problem_understanding",
+    "engineering_method",
+    "mathematical_execution",
+    "engineering_validity",
+    "final_response_quality",
+}
+
+RUBRIC_STATUSES = {
+    "correct",
+    "partially_correct",
+    "incorrect",
+    "not_applicable",
+}
+
+
+def _invalid_response():
+    return EvaluationResponseError(
+        "The evaluation service returned an invalid structured response. "
+        "Please retry."
+    )
+
+
+def parse_evaluation_response(raw_response):
+    """Parse and validate the evaluator's structured JSON response."""
+
+    if not isinstance(raw_response, str) or not raw_response.strip():
+        raise EvaluationResponseError(
+            "The evaluation service returned an empty response. "
+            "Please retry."
+        )
+
+    try:
+        evaluation = json.loads(raw_response)
+    except json.JSONDecodeError as error:
+        raise _invalid_response() from error
+
+    if not isinstance(evaluation, dict):
+        raise _invalid_response()
+
+    extracted_answer = evaluation.get("extracted_answer")
+    reasoning_evaluation = evaluation.get("reasoning_evaluation")
+
+    if not isinstance(extracted_answer, dict):
+        raise _invalid_response()
+
+    required_extracted_fields = {
+        "has_numerical_answer",
+        "value",
+        "unit",
+    }
+
+    if not required_extracted_fields <= set(extracted_answer):
+        raise _invalid_response()
+
+    has_numerical_answer = extracted_answer["has_numerical_answer"]
+    value = extracted_answer["value"]
+    unit = extracted_answer["unit"]
+
+    if not isinstance(has_numerical_answer, bool):
+        raise _invalid_response()
+
+    if value is not None and (
+        not isinstance(value, (int, float))
+        or isinstance(value, bool)
+    ):
+        raise _invalid_response()
+
+    if unit is not None and not isinstance(unit, str):
+        raise _invalid_response()
+
+    if has_numerical_answer and value is None:
+        raise _invalid_response()
+
+    if not has_numerical_answer and (value is not None or unit is not None):
+        raise _invalid_response()
+
+    if not isinstance(reasoning_evaluation, dict):
+        raise _invalid_response()
+
+    rubric = reasoning_evaluation.get("rubric")
+    errors = reasoning_evaluation.get("errors")
+
+    if not isinstance(rubric, dict):
+        raise _invalid_response()
+
+    if not RUBRIC_DIMENSIONS <= set(rubric):
+        raise _invalid_response()
+
+    for dimension_name in RUBRIC_DIMENSIONS:
+        dimension = rubric.get(dimension_name)
+
+        if not isinstance(dimension, dict):
+            raise _invalid_response()
+
+        if dimension.get("status") not in RUBRIC_STATUSES:
+            raise _invalid_response()
+
+        if not isinstance(dimension.get("explanation"), str):
+            raise _invalid_response()
+
+    if not isinstance(errors, list):
+        raise _invalid_response()
+
+    for error in errors:
+        if not isinstance(error, dict):
+            raise _invalid_response()
+
+        if error.get("category") not in RUBRIC_DIMENSIONS:
+            raise _invalid_response()
+
+        if not isinstance(error.get("description"), str):
+            raise _invalid_response()
+
+        if not isinstance(error.get("why_it_matters"), str):
+            raise _invalid_response()
+
+    if not isinstance(reasoning_evaluation.get("corrected_solution"), str):
+        raise _invalid_response()
+
+    if not isinstance(reasoning_evaluation.get("summary"), str):
+        raise _invalid_response()
+
+    return evaluation
+
+
+def _request_evaluation(**request_options):
+    try:
+        return _get_client().chat.completions.create(**request_options)
+    except EvaluationError:
+        raise
+    except AuthenticationError as error:
+        raise EvaluationConfigurationError(
+            "The evaluation service could not authenticate with its "
+            "provider. Please contact the application administrator."
+        ) from error
+    except APITimeoutError as error:
+        raise EvaluationRequestError(
+            "The evaluation service timed out. Please retry."
+        ) from error
+    except OpenAIError as error:
+        raise EvaluationRequestError(
+            "The evaluation service request failed. Please retry."
+        ) from error
+
+# --------------------------------------------------
+# 4. ENGINEERING EVALUATION FUNCTION
 # --------------------------------------------------
 
 def evaluate_solution(question, candidate_solution, domain):
@@ -124,7 +310,7 @@ CANDIDATE SOLUTION:
 Extract the final answer and evaluate the candidate solution.
 """
 
-    response = client.chat.completions.create(
+    response = _request_evaluation(
         model="dots-studio/dots-3-note-preview:free",
 
         extra_body={
@@ -393,19 +579,9 @@ Extract the final answer and evaluate the candidate solution.
         }
     )
 
-    raw_response = response.choices[0].message.content
-
-    if not raw_response:
-        raise ValueError(
-            "The LLM returned an empty response."
-        )
-
     try:
-        evaluation = json.loads(raw_response)
+        raw_response = response.choices[0].message.content
+    except (AttributeError, IndexError, TypeError) as error:
+        raise _invalid_response() from error
 
-    except json.JSONDecodeError as error:
-        raise ValueError(
-            "The LLM returned an invalid structured response."
-        ) from error
-
-    return evaluation
+    return parse_evaluation_response(raw_response)

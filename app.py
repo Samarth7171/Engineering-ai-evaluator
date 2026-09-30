@@ -6,7 +6,7 @@ from evaluator.deterministic_checks import (
     evaluate_numerical_answer,
     evaluate_unit,
 )
-from evaluator.llm_evaluator import evaluate_solution
+from evaluator.llm_evaluator import EvaluationError, evaluate_solution
 
 
 # ==================================================
@@ -410,12 +410,9 @@ if evaluate_button:
                             "extracted unit."
                         )
 
-        except Exception as error:
+        except EvaluationError:
 
             st.error(
-                "The evaluation could not be completed."
+                "The evaluation could not be completed. "
+                "Please retry in a moment."
             )
-
-            st.write("Technical error:")
-
-            st.code(str(error))
